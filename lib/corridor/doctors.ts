@@ -1,3 +1,5 @@
+import { researchClinicsForDestination } from "@/lib/corridor/clinic-directory";
+import { detectCountry } from "@/lib/corridor/countries";
 import type { DoctorCandidate } from "@/lib/types";
 
 function blob(...parts: string[]) {
@@ -14,57 +16,15 @@ export function suggestDoctorsForDestination(input: {
   const condition = input.condition || "specialist care";
   const language = input.preferredLanguage || "English";
   const city = input.destinationCity || "your city";
+  const country = detectCountry(input.destinationCity, input.destinationCountry);
 
-  if (
-    place.includes("uk") ||
-    place.includes("united kingdom") ||
-    place.includes("london") ||
-    place.includes("england")
-  ) {
-    return [
-      {
-        id: `doc-uk-1-${Date.now()}`,
-        doctorName: "Dr. Sarah Whitfield",
-        organization: city.toLowerCase().includes("london")
-          ? "NHS teaching hospital clinic (London)"
-          : `NHS specialist clinic near ${city}`,
-        specialty: condition,
-        languages: ["English"],
-        location: city,
-        distanceMinutes: 25,
-        careRoute: "NHS referral pathway — confirm locally",
-        availabilityText: "Usually via GP referral or private clinic",
-        expertise: [condition, "Cross-border record review"],
-        matchScore: 90,
-        matchReason:
-          "UK care often starts with GP registration, then specialist referral. This is a planning suggestion only.",
-        preparationRequirements: [
-          "English clinical summary",
-          "Medication list",
-          "Key imaging/pathology reports",
-        ],
-        fictional: true,
-        recommended: true,
-      },
-      {
-        id: `doc-uk-2-${Date.now()}`,
-        doctorName: "Dr. James Okonkwo",
-        organization: `Private specialty centre · ${city}`,
-        specialty: condition,
-        languages: ["English"],
-        location: city,
-        distanceMinutes: 18,
-        careRoute: "Private — confirm fees and wait times",
-        availabilityText: "Ask clinic for earliest review",
-        expertise: [condition, "International patients"],
-        matchScore: 84,
-        matchReason:
-          "Private route can be faster while NHS registration is arranged.",
-        preparationRequirements: ["Passport/ID", "Clinical handoff", "Payment/insurance details"],
-        fictional: true,
-      },
-    ];
-  }
+  const researched = researchClinicsForDestination({
+    destinationCity: input.destinationCity,
+    destinationCountry: input.destinationCountry,
+    destinationCountryId: country?.id,
+    condition: input.condition,
+  });
+  if (researched.length) return researched;
 
   if (
     place.includes("spain") ||
@@ -109,6 +69,79 @@ export function suggestDoctorsForDestination(input: {
         matchScore: 80,
         matchReason: "Alternative nearby option.",
         preparationRequirements: ["Handoff"],
+        fictional: true,
+      },
+    ];
+  }
+
+  if (
+    place.includes("thailand") ||
+    place.includes("bangkok") ||
+    place.includes("chiang mai") ||
+    place.includes("phuket")
+  ) {
+    const diabetes = /diabetes|t1d|type\s*1|insulin|cgm|pump/.test(
+      condition.toLowerCase()
+    );
+    const specialty = diabetes ? "Endocrinology / diabetes" : condition;
+    const bangkok = city.toLowerCase().includes("bangkok") || place.includes("bangkok");
+    return [
+      {
+        id: `doc-th-1-${Date.now()}`,
+        doctorName: "Dr. Nattaporn Chaiyasit",
+        organization: bangkok
+          ? "Private tertiary hospital · International centre · Bangkok"
+          : `Private hospital international desk · ${city}`,
+        specialty,
+        languages: ["Thai", "English"],
+        location: bangkok ? "Bangkok" : city,
+        distanceMinutes: 22,
+        careRoute:
+          "Book via international patient centre — email records + payment route first",
+        availabilityText: diabetes
+          ? "Ask for earliest endocrinology slot on/after arrival day"
+          : "Ask international desk for earliest specialty slot",
+        expertise: diabetes
+          ? ["Type 1 diabetes", "Insulin / pump continuity", "Expat patients"]
+          : [condition, "International patients"],
+        matchScore: 92,
+        matchReason: diabetes
+          ? "Bangkok private hospitals with international desks are the usual expat path for T1D — they can pre-register you and hold an appointment when English records arrive."
+          : `Practical first specialty contact in ${city} via international desk.`,
+        preparationRequirements: diabetes
+          ? [
+              "English endocrinology transfer letter",
+              "Insulin / pump / CGM list",
+              "Recent HbA1c",
+              "Passport + payment/insurance",
+            ]
+          : ["English clinical summary", "Medication list", "Passport", "Payment/insurance"],
+        fictional: true,
+        recommended: true,
+      },
+      {
+        id: `doc-th-2-${Date.now()}`,
+        doctorName: "Dr. Siriporn Wattana",
+        organization: bangkok
+          ? "University-affiliated private diabetes clinic · Bangkok"
+          : `Specialty outpatient · ${city}`,
+        specialty,
+        languages: ["Thai", "English"],
+        location: bangkok ? "Bangkok" : city,
+        distanceMinutes: 30,
+        careRoute: "Private outpatient — confirm fees and English clinic days",
+        availabilityText: "Backup slot if tertiary hospital wait is long",
+        expertise: diabetes
+          ? ["Diabetes education", "CGM review"]
+          : [condition],
+        matchScore: 84,
+        matchReason:
+          "Secondary option if you want a diabetes-focused outpatient review after the hospital file is open.",
+        preparationRequirements: [
+          "Handoff letter",
+          "Device downloads if available",
+          "ID",
+        ],
         fictional: true,
       },
     ];
@@ -226,6 +259,118 @@ export function suggestDoctorsForDestination(input: {
         ],
         fictional: true,
         recommended: true,
+      },
+    ];
+  }
+
+  if (
+    place.includes("angola") ||
+    place.includes("luanda") ||
+    place.includes("benguela")
+  ) {
+    const pregnancy = condition.toLowerCase().includes("pregnan");
+    return [
+      {
+        id: `doc-ao-1-${Date.now()}`,
+        doctorName: "Dra. Ana Moreira",
+        organization: city.toLowerCase().includes("luanda")
+          ? "Private maternity & family clinic · Luanda"
+          : `Private clinic · ${city}`,
+        specialty: pregnancy ? "Antenatal / obstetrics" : condition,
+        languages: ["Portuguese", "English"],
+        location: city,
+        distanceMinutes: 22,
+        careRoute: "Private clinic — confirm fees and NGO insurance",
+        availabilityText: "Book early for antenatal slots",
+        expertise: pregnancy
+          ? ["Antenatal care", "NGO/expat patients"]
+          : [condition, "Expat care"],
+        matchScore: 88,
+        matchReason:
+          "Luanda private clinics are the usual practical path for NGO/expat care, including pregnancy booking.",
+        preparationRequirements: [
+          "Passport/ID",
+          "Prenatal notes or health summary",
+          "Vaccine card if available",
+          "Payment/insurance method",
+        ],
+        fictional: true,
+        recommended: true,
+      },
+      {
+        id: `doc-ao-2-${Date.now()}`,
+        doctorName: "Dr. João Ferreira",
+        organization: `Private hospital outpatient · ${city}`,
+        specialty: condition,
+        languages: ["Portuguese"],
+        location: city,
+        distanceMinutes: 35,
+        careRoute: "Private hospital — Portuguese-first",
+        availabilityText: "Ask international desk for English availability",
+        expertise: [condition],
+        matchScore: 80,
+        matchReason:
+          "Hospital outpatient backup if you need broader diagnostics.",
+        preparationRequirements: ["Clinical summary", "Portuguese translation helpful"],
+        fictional: true,
+      },
+    ];
+  }
+
+  if (
+    place.includes("california") ||
+    place.includes("united states") ||
+    place.includes("usa") ||
+    place.includes("los angeles") ||
+    place.includes("san francisco") ||
+    place.includes("san diego") ||
+    place.includes("berkeley")
+  ) {
+    return [
+      {
+        id: `doc-us-1-${Date.now()}`,
+        doctorName: "Dr. Emily Chen",
+        organization: `Campus / student health · ${city}`,
+        specialty: condition,
+        languages: ["English", language].filter(
+          (v, i, arr) => arr.indexOf(v) === i
+        ),
+        location: city,
+        distanceMinutes: 12,
+        careRoute: "Campus health or urgent care — confirm student access",
+        availabilityText: "Check campus health hours and insurance rules",
+        expertise: [condition, "Student health", "Vaccine records"],
+        matchScore: 90,
+        matchReason:
+          "For international students, campus health or urgent care is often the fastest first step for injuries and vaccine gaps.",
+        preparationRequirements: [
+          "Student ID / insurance card",
+          "Vaccine scraps and translations",
+          "Imaging/reports if any",
+        ],
+        fictional: true,
+        recommended: true,
+      },
+      {
+        id: `doc-us-2-${Date.now()}`,
+        doctorName: "Dr. Marcus Cole",
+        organization: `Primary care clinic · ${city}`,
+        specialty: "Primary care",
+        languages: ["English"],
+        location: city,
+        distanceMinutes: 20,
+        careRoute: "Insurance network primary care",
+        availabilityText: "New-patient wait times vary",
+        expertise: ["Primary care", "Referrals"],
+        matchScore: 84,
+        matchReason:
+          "A primary care clinic helps assemble ongoing care and referrals after the first urgent issue is handled.",
+        preparationRequirements: [
+          "Insurance details",
+          "Medication list",
+          "Record pack",
+        ],
+        fictional: true,
       },
     ];
   }

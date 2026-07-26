@@ -84,15 +84,17 @@ export default function AgentPage() {
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <h1 className="font-display text-4xl">Ask Transit</h1>
-        <p className="mt-2 text-muted-foreground">What do you need?</p>
+        <h1 className="font-display text-4xl">Ask your agent</h1>
+        <p className="mt-2 text-muted-foreground">
+          Bureaucracy, booking, docs — ask anything about your move.
+        </p>
       </div>
 
       <div className="flex flex-wrap gap-2">
         {[
-          "What should I do next?",
-          "What’s important for my route?",
-          "What’s missing?",
+          "What do you still need from me?",
+          "How do hospitals book in my destination?",
+          "What should I approve next?",
         ].map((prompt) => (
           <Button
             key={prompt}

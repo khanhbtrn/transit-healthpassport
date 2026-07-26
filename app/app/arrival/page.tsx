@@ -3,6 +3,10 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { ApprovalQueue } from "@/components/agent/approval-queue";
+import { DoneLog } from "@/components/agent/done-log";
+import { NeedsPanel } from "@/components/agent/needs-panel";
+import { CriticalText } from "@/components/corridor/critical-text";
 import { Button } from "@/components/ui/button";
 import { useTransitStore } from "@/lib/store/use-transit-store";
 import { cn } from "@/lib/utils";
@@ -24,6 +28,11 @@ export default function ArrivalPage() {
   const specialistRequestDraft = useTransitStore((s) => s.specialistRequestDraft);
   const corridorBrief = useTransitStore((s) => s.corridorBrief);
   const setAppointmentRequest = useTransitStore((s) => s.setAppointmentRequest);
+  const agentNeeds = useTransitStore((s) => s.agentNeeds);
+  const approvals = useTransitStore((s) => s.approvals);
+  const agentDone = useTransitStore((s) => s.agentDone);
+  const resolveAgentNeed = useTransitStore((s) => s.resolveAgentNeed);
+  const setApprovalStatus = useTransitStore((s) => s.setApprovalStatus);
 
   const [view, setView] = useState<DocView>("letter");
 
@@ -128,7 +137,7 @@ export default function ArrivalPage() {
           </p>
         </div>
         <Button asChild size="lg">
-          <Link href="/app/relocation">Start Transit</Link>
+          <Link href="/app/relocation">Start agent</Link>
         </Button>
       </div>
     );
@@ -141,13 +150,18 @@ export default function ArrivalPage() {
           {origin} → {destination}
         </p>
         <h1 className="font-display text-3xl tracking-tight md:text-4xl">
-          Care transfer package
+          Agent summary
         </h1>
         <p className="text-muted-foreground">
-          A calm, clinic-ready summary. Draft only — nothing is sent outside
-          Transit unless you choose to.
+          What Transit did for you, what still needs your approval, and the
+          clinic-ready letter. Nothing is sent outside this app until you
+          approve.
         </p>
       </header>
+
+      <NeedsPanel needs={agentNeeds} onResolve={resolveAgentNeed} />
+      <ApprovalQueue items={approvals} onStatus={setApprovalStatus} />
+      <DoneLog items={agentDone} />
 
       <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
         {(
@@ -283,11 +297,16 @@ export default function ArrivalPage() {
       {corridorBrief?.mustKnow?.length ? (
         <section className="space-y-3">
           <p className="text-sm text-muted-foreground">Next for your route</p>
+          <p className="text-[11px] text-danger">
+            Red = critical for continuity / safety
+          </p>
           <ul className="space-y-2 text-sm leading-relaxed">
             {corridorBrief.mustKnow.slice(0, 4).map((item) => (
               <li key={item} className="flex gap-3">
                 <span className="mt-2 h-px w-3 shrink-0 bg-border" />
-                <span>{item}</span>
+                <span>
+                  <CriticalText text={item} />
+                </span>
               </li>
             ))}
           </ul>

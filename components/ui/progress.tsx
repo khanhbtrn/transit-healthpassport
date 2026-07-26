@@ -19,7 +19,7 @@ export function Progress({
       value={value}
     >
       <ProgressPrimitive.Indicator
-        className="h-full rounded-full bg-gradient-to-r from-accent to-[#2f8a6d] transition-all duration-700 ease-out"
+        className="h-full rounded-full bg-gradient-to-r from-accent to-[#2aa89a] transition-all duration-700 ease-out"
         style={{ width: `${value}%` }}
       />
     </ProgressPrimitive.Root>

@@ -28,6 +28,12 @@ export const mariaProfile: Profile = {
   weightKg: "58",
   sex: "Female",
   reasonForMove: "Relocating for work",
+  journeyIntent: "continue_treatment",
+  carePreferences: {
+    budget: "insured",
+    languages: "English, Spanish",
+    notes: "",
+  },
 }
 
 export const mariaConditions: Condition[] = [

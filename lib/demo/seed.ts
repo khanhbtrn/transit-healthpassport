@@ -1,3 +1,10 @@
+import {
+  alessiaAllergies,
+  alessiaConditions,
+  alessiaMedications,
+  alessiaProfile,
+  alessiaSpecialists,
+} from "@/data/alessia";
 import { mariaDocuments } from "@/data/documents";
 import { mariaDoctors, defaultAppointmentRequest } from "@/data/doctors";
 import { mariaHandoff } from "@/data/handoff";
@@ -15,15 +22,19 @@ import {
 } from "@/data/maria";
 import { mariaRelocationTasks } from "@/data/relocation";
 import { mariaTimeline } from "@/data/timeline";
+import { buildAgentNeeds } from "@/lib/agent/plan";
 import {
   buildCorridorBrief,
   corridorContextBlock,
   type CorridorBrief,
 } from "@/lib/corridor/knowledge";
 import type {
+  AgentDoneItem,
   AgentMessage,
+  AgentNeed,
   Allergy,
   AppointmentRequest,
+  ApprovalItem,
   Condition,
   ContinuityRisk,
   DoctorCandidate,
@@ -71,6 +82,12 @@ export interface TransitState {
   transitionComplete: boolean;
   spokenHandoffUrl: string | null;
   specialistRequestDraft: string;
+  /** Inputs Transit still needs from the patient (docs, people, confirmations). */
+  agentNeeds: AgentNeed[];
+  /** Drafts awaiting patient approval before any real send. */
+  approvals: ApprovalItem[];
+  /** What the agent already did. */
+  agentDone: AgentDoneItem[];
 }
 
 /** @deprecated use TransitState */
@@ -92,6 +109,10 @@ export interface OnboardingInput {
   weightKg?: string;
   sex?: string;
   reasonForMove?: string;
+  journeyIntent?: import("@/lib/types").JourneyIntent;
+  careBudget?: import("@/lib/types").CareBudget | "";
+  careLanguages?: string;
+  careNotes?: string;
 }
 
 const emptyJourneySteps = (): JourneyStep[] => [
@@ -194,6 +215,12 @@ export function createEmptyState(): TransitState {
       weightKg: "",
       sex: "",
       reasonForMove: "",
+      journeyIntent: "continue_treatment",
+      carePreferences: {
+        budget: "",
+        languages: "",
+        notes: "",
+      },
     },
     conditions: [],
     medications: [],
@@ -223,6 +250,9 @@ export function createEmptyState(): TransitState {
     transitionComplete: false,
     spokenHandoffUrl: null,
     specialistRequestDraft: "",
+    agentNeeds: [],
+    approvals: [],
+    agentDone: [],
   };
 }
 
@@ -280,6 +310,15 @@ export function createJourneyFromOnboarding(
       weightKg: input.weightKg?.trim() || "",
       sex: input.sex?.trim() || "",
       reasonForMove: input.reasonForMove?.trim() || "",
+      journeyIntent: input.journeyIntent || "continue_treatment",
+      carePreferences: {
+        budget: input.careBudget || "",
+        languages:
+          input.careLanguages?.trim() ||
+          input.preferredLanguage.trim() ||
+          "English",
+        notes: input.careNotes?.trim() || "",
+      },
     },
     conditions,
     journeySteps: emptyJourneySteps().map((step) =>
@@ -295,6 +334,38 @@ export function createJourneyFromOnboarding(
       ...(input.primaryConcern.trim() ? [input.primaryConcern.trim()] : []),
       ...corridorBrief.mustKnow.slice(0, 2),
     ],
+    agentNeeds: buildAgentNeeds({
+      profile: {
+        id: "draft",
+        fullName: input.fullName.trim() || "Traveler",
+        age: 0,
+        dateOfBirth: "",
+        currentCountry: input.currentCountry.trim(),
+        destinationCountry: input.destinationCountry.trim(),
+        currentCity: input.currentCity.trim(),
+        destinationCity: input.destinationCity.trim(),
+        moveDate: input.moveDate,
+        preferredLanguage: input.preferredLanguage.trim() || "English",
+        destinationDoctorLanguage: "",
+        insuranceRoute: "Not yet confirmed",
+        primaryConcern: input.primaryConcern.trim(),
+        avatarInitials: "TR",
+        heightCm: "",
+        weightKg: "",
+        sex: "",
+        reasonForMove: input.reasonForMove?.trim() || "",
+        journeyIntent: input.journeyIntent || "continue_treatment",
+        carePreferences: {
+          budget: input.careBudget || "",
+          languages: input.careLanguages?.trim() || "English",
+          notes: input.careNotes?.trim() || "",
+        },
+      },
+      conditions,
+      documents: [],
+      conversationCompleted: false,
+      brief: corridorBrief,
+    }),
     unresolvedQuestions: [
       `Confirm healthcare registration steps for ${input.destinationCountry || input.destinationCity}`,
       "Upload a recent specialist letter or prescription",
@@ -324,22 +395,23 @@ export function createJourneyFromOnboarding(
       {
         id: "welcome",
         role: "assistant",
-        content: `Hi ${firstName}. For ${corridorBrief.routeLabel}: ${corridorBrief.summary}`,
+        content: `Hi ${firstName}. I’m your Transit agent for ${corridorBrief.routeLabel}. I’ll ask only for the docs and people I need, then prepare booking and paperwork — you’ll approve anything before it leaves this app.`,
         whyItMatters: corridorBrief.mustKnow[0],
         nextAction:
-          "Add documents or listen to your doctor, then I’ll build a destination-specific plan.",
-        sourceStatus: "Corridor guidance for your route",
+          "If you’re with your doctor now, tap Listen. Otherwise open Agent and let me run.",
+        sourceStatus: "Agent plan for your corridor",
         actions: [
           {
             id: "w1",
-            label: "What’s important for my route?",
-            type: "urgent",
+            label: "Start agent",
+            type: "agent",
+            href: "/app/relocation",
           },
           {
             id: "w2",
-            label: "Add documents",
-            type: "documents",
-            href: "/app/documents",
+            label: "Listen to doctor",
+            type: "conversation",
+            href: "/app/conversation",
           },
         ],
         createdAt: new Date().toISOString(),
@@ -348,7 +420,99 @@ export function createJourneyFromOnboarding(
   };
 }
 
-/** Optional investor/demo path only — not the default product experience. */
+/** Primary demo persona: Alessia, Milan → Bangkok, type 1 diabetes. */
+export function createAlessiaSeed(): TransitState {
+  const corridorBrief = buildCorridorBrief({
+    currentCity: alessiaProfile.currentCity,
+    currentCountry: alessiaProfile.currentCountry,
+    destinationCity: alessiaProfile.destinationCity,
+    destinationCountry: alessiaProfile.destinationCountry,
+    conditions: "Type 1 diabetes",
+    primaryConcern: alessiaProfile.primaryConcern,
+  });
+
+  return {
+    ...createEmptyState(),
+    onboarded: true,
+    isDemo: true,
+    readinessPercent: 18,
+    corridorBrief,
+    profile: alessiaProfile,
+    conditions: alessiaConditions,
+    medications: alessiaMedications,
+    allergies: alessiaAllergies,
+    specialists: alessiaSpecialists,
+    agentNeeds: buildAgentNeeds({
+      profile: alessiaProfile,
+      conditions: alessiaConditions,
+      documents: [],
+      conversationCompleted: false,
+    }),
+    continuityPriorities: [
+      "Arrival-day endocrinology review in Bangkok",
+      "Insulin + CGM bridge supply through first week",
+      ...corridorBrief.mustKnow.slice(0, 2),
+    ],
+    unresolvedQuestions: [
+      "Confirm English transfer letter from Milan endocrinology",
+      "Confirm employer insurance for Thai private hospitals",
+      "Confirm earliest international-desk slot after landing",
+    ],
+    risks: [
+      {
+        id: "risk-t1d-gap",
+        title: "Insulin / CGM gap on arrival",
+        description: corridorBrief.medicationNotes,
+        severity: "critical",
+        sourceStatus: "Corridor guidance — confirm with clinicians",
+      },
+      {
+        id: "risk-booking",
+        title: "Bangkok private hospital booking unfamiliarity",
+        description: corridorBrief.registrationNotes,
+        severity: "high",
+        sourceStatus: "Corridor guidance — verify with hospital desk",
+      },
+    ],
+    messages: [
+      {
+        id: "welcome-alessia",
+        role: "assistant",
+        content:
+          "Hi Alessia. I’m your Transit agent for Milan → Bangkok. You’re with your doctor now — I’ll ask only for the docs I still need, prepare the Bangkok international-desk booking and handoff, then show what you must approve.",
+        whyItMatters: corridorBrief.mustKnow[0],
+        nextAction: "Tap Listen with your endocrinologist, or start the agent run.",
+        sourceStatus: "Alessia demo journey",
+        actions: [
+          {
+            id: "a1",
+            label: "Listen now",
+            type: "conversation",
+            href: "/app/conversation",
+          },
+          {
+            id: "a2",
+            label: "Start agent",
+            type: "agent",
+            href: "/app/relocation",
+          },
+        ],
+        createdAt: new Date().toISOString(),
+      },
+    ],
+    journeySteps: emptyJourneySteps().map((step) =>
+      step.id === "health_profile"
+        ? {
+            ...step,
+            status: "in_progress",
+            description: "Type 1 diabetes noted — capture visit + upload regimen",
+          }
+        : step
+    ),
+  };
+}
+
+/** Optional secondary demo — Maria UK→Spain Crohn’s walkthrough. */
 export function createMariaSeed(): TransitState {
   const completedTaskIds = mariaRelocationTasks
     .filter((t) => t.status === "complete")
@@ -411,6 +575,14 @@ export function createMariaSeed(): TransitState {
     transitionComplete: false,
     spokenHandoffUrl: null,
     specialistRequestDraft: "",
+    agentNeeds: buildAgentNeeds({
+      profile: mariaProfile,
+      conditions: mariaConditions,
+      documents: mariaDocuments,
+      conversationCompleted: false,
+    }),
+    approvals: [],
+    agentDone: [],
   };
 }
 
@@ -479,6 +651,12 @@ export function buildProfileContext(state: {
     `Continuity priorities: ${state.continuityPriorities.join("; ") || "none yet"}`,
     `Unresolved: ${state.unresolvedQuestions.join("; ") || "none yet"}`,
     corridorContextBlock(state.corridorBrief),
+    state.corridorBrief?.communityLinks?.length
+      ? `Community tips (Reddit/forums — not official rules): ${state.corridorBrief.communityLinks
+          .map((l) => `${l.title} (${l.why}) ${l.url}`)
+          .join(" | ")}`
+      : "Community tips: none loaded yet — still use practical expat/bureaucracy patterns for this corridor when helpful, and label them as community tips.",
+    "Act as an agent: ask for missing docs/people, draft booking and paperwork, and mark anything that needs patient approval before send.",
     "Important: Customise every recommendation to this exact origin → destination corridor. Do not give Spain/Barcelona advice unless that is the destination.",
     "Rules: Do not diagnose or prescribe. Distinguish patient-reported vs verified. Encourage clinician confirmation. Verify eligibility with official sources.",
   ].join("\n");

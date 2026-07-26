@@ -57,6 +57,21 @@ export type JourneyStepId =
   | "clinical_handoff"
   | "arrival_readiness";
 
+/** Why the user opened Transit — drives Home workflow. */
+export type JourneyIntent =
+  | "second_look"
+  | "set_up_care"
+  | "rebuild_history"
+  | "continue_treatment";
+
+export type CareBudget = "tight" | "moderate" | "flexible" | "insured";
+
+export interface CarePreferences {
+  budget: CareBudget | "";
+  languages: string;
+  notes: string;
+}
+
 export interface Profile {
   id: string;
   fullName: string;
@@ -77,6 +92,8 @@ export interface Profile {
   weightKg: string;
   sex: string;
   reasonForMove: string;
+  journeyIntent: JourneyIntent;
+  carePreferences: CarePreferences;
 }
 
 export interface Condition {
@@ -234,6 +251,57 @@ export interface AgentAction {
   label: string;
   type: string;
   href?: string;
+}
+
+/** Something Transit needs from the patient before/while it works. */
+export type AgentNeedKind =
+  | "upload_doc"
+  | "talk_to_person"
+  | "confirm_info"
+  | "bring_item";
+
+export type AgentNeedStatus = "open" | "done" | "skipped";
+
+export interface AgentNeed {
+  id: string;
+  kind: AgentNeedKind;
+  title: string;
+  detail: string;
+  status: AgentNeedStatus;
+  href?: string;
+  priority: Priority;
+}
+
+/** Work Transit drafted that the patient must approve before any real send. */
+export type ApprovalKind =
+  | "specialist_request"
+  | "clinic_application"
+  | "appointment_request"
+  | "handoff_letter"
+  | "document_pack";
+
+export type ApprovalStatus =
+  | "needs_approval"
+  | "approved"
+  | "rejected"
+  | "simulated_sent";
+
+export interface ApprovalItem {
+  id: string;
+  kind: ApprovalKind;
+  title: string;
+  summary: string;
+  detail: string;
+  status: ApprovalStatus;
+  createdAt: string;
+}
+
+/** Log of actions the agent completed (drafted/researched/matched). */
+export interface AgentDoneItem {
+  id: string;
+  title: string;
+  detail: string;
+  createdAt: string;
 }
 
 export interface JourneyStep {

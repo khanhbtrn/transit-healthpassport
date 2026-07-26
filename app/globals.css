@@ -1,29 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f3f1eb;
-  --foreground: #141311;
-  --card: rgba(255, 252, 247, 0.82);
-  --card-solid: #fffcf7;
-  --card-foreground: #141311;
-  --muted: #ebe6dc;
-  --muted-foreground: #5f5a54;
-  --border: rgba(28, 27, 25, 0.1);
-  --accent: #1f5c4a;
-  --accent-soft: #e4f0eb;
-  --accent-foreground: #f4fffa;
-  --warning: #8a6528;
-  --warning-soft: #f6efdf;
+  --background: #eef2f6;
+  --foreground: #101828;
+  --card: rgba(250, 252, 255, 0.92);
+  --card-solid: #fafcff;
+  --card-foreground: #101828;
+  --muted: #dfe6ef;
+  --muted-foreground: #526179;
+  --border: rgba(16, 24, 40, 0.1);
+  --accent: #0e6b64;
+  --accent-soft: #d8f1ee;
+  --accent-foreground: #f3fffd;
+  --warning: #9a6b24;
+  --warning-soft: #f5ecdc;
   --danger-soft: #f6e8e4;
   --danger: #8a4b3c;
-  --shadow: 0 1px 0 rgba(255, 255, 255, 0.55) inset,
-    0 18px 50px rgba(20, 19, 17, 0.08);
-  --shadow-soft: 0 10px 30px rgba(20, 19, 17, 0.05);
-  --shadow-lift: 0 22px 60px rgba(20, 19, 17, 0.12);
-  --glass: rgba(255, 252, 247, 0.72);
+  --cover: #0b1526;
+  --brass: #c9a45c;
+  --brass-soft: rgba(201, 164, 92, 0.16);
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 18px 48px rgba(11, 21, 38, 0.08);
+  --shadow-soft: 0 10px 28px rgba(11, 21, 38, 0.05);
+  --shadow-lift: 0 22px 56px rgba(11, 21, 38, 0.12);
+  --glass: rgba(250, 252, 255, 0.74);
   --glass-border: rgba(255, 255, 255, 0.55);
-  --ink-deep: #0f1412;
-  --radius: 1.15rem;
+  --ink-deep: #0b1526;
+  --signal: #5eead4;
+  --radius: 0.85rem;
 }
 
 @theme inline {
@@ -33,7 +37,7 @@
   --color-card-foreground: var(--card-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-border: #ddd6cb;
+  --color-border: #c7d2e0;
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-accent-foreground: var(--accent-foreground);
@@ -56,10 +60,9 @@ html {
 
 body {
   background:
-    radial-gradient(900px 520px at 8% -8%, rgba(31, 92, 74, 0.11), transparent 55%),
-    radial-gradient(700px 420px at 96% 4%, rgba(20, 19, 17, 0.05), transparent 50%),
-    radial-gradient(500px 280px at 50% 100%, rgba(31, 92, 74, 0.05), transparent 55%),
-    var(--background);
+    radial-gradient(900px 480px at 8% -12%, rgba(201, 164, 92, 0.1), transparent 55%),
+    radial-gradient(700px 420px at 100% 0%, rgba(14, 107, 100, 0.08), transparent 52%),
+    linear-gradient(180deg, #f4f7fb 0%, var(--background) 40%, #e8eef5 100%);
   color: var(--foreground);
   font-family: var(--font-body), "Segoe UI", sans-serif;
   min-height: 100%;
@@ -72,7 +75,7 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: 50;
-  opacity: 0.035;
+  opacity: 0.028;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
@@ -82,11 +85,11 @@ h2,
 h3,
 .font-display {
   font-family: var(--font-display), Georgia, serif;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
 }
 
 ::selection {
-  background: rgba(31, 92, 74, 0.2);
+  background: rgba(14, 107, 100, 0.22);
 }
 
 :focus-visible {
@@ -107,10 +110,67 @@ h3,
 
 .transit-grid {
   background-image:
-    linear-gradient(rgba(28, 27, 25, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(28, 27, 25, 0.035) 1px, transparent 1px);
-  background-size: 36px 36px;
+    linear-gradient(rgba(16, 24, 40, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 24, 40, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
   mask-image: radial-gradient(circle at center, black 35%, transparent 85%);
+}
+
+.passport-guilloche {
+  background-image:
+    repeating-radial-gradient(
+      circle at 50% 40%,
+      transparent 0 10px,
+      rgba(201, 164, 92, 0.045) 10px 11px
+    ),
+    repeating-linear-gradient(
+      115deg,
+      transparent,
+      transparent 18px,
+      rgba(14, 107, 100, 0.035) 18px 19px
+    );
+}
+
+.passport-page {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.94));
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .passport-page:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+.passport-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 12px,
+      rgba(14, 107, 100, 0.03) 12px 13px
+    );
+}
+
+.mrz-band {
+  font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: var(--cover);
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .glass-panel {
@@ -124,10 +184,10 @@ h3,
 .surface-elevated {
   background: linear-gradient(
     180deg,
-    rgba(255, 252, 247, 0.96),
-    rgba(255, 252, 247, 0.88)
+    rgba(250, 252, 255, 0.98),
+    rgba(250, 252, 255, 0.92)
   );
-  border: 1px solid rgba(28, 27, 25, 0.08);
+  border: 1px solid rgba(16, 24, 40, 0.08);
   box-shadow: var(--shadow);
 }
 
@@ -141,7 +201,7 @@ h3,
 .surface-interactive:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-lift);
-  border-color: rgba(31, 92, 74, 0.28);
+  border-color: rgba(14, 107, 100, 0.28);
 }
 
 .depth-stage {
@@ -218,4 +278,93 @@ h3,
 
 .pulse-ring {
   animation: pulse-ring 1.8s ease-out infinite;
+}
+
+@keyframes stamp-press {
+  0% {
+    opacity: 0;
+    transform: scale(1.25) rotate(-14deg);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(0.96) rotate(-7deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-8deg);
+  }
+}
+
+.stamp-press {
+  animation: stamp-press 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.mrz-track {
+  animation: mrz-scroll 28s linear infinite;
+}
+
+@keyframes mrz-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.foil-shimmer {
+  background: linear-gradient(
+    105deg,
+    rgba(201, 164, 92, 0.15) 0%,
+    rgba(255, 236, 190, 0.55) 42%,
+    rgba(201, 164, 92, 0.12) 58%,
+    rgba(201, 164, 92, 0.2) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: foil-sweep 4.8s ease-in-out infinite;
+}
+
+@keyframes foil-sweep {
+  0%,
+  100% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 0% 50%;
+  }
+}
+
+.brass-glow {
+  animation: brass-glow 3.6s ease-in-out infinite;
+}
+
+@keyframes brass-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 rgba(201, 164, 92, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(201, 164, 92, 0.45));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrz-track,
+  .foil-shimmer,
+  .brass-glow,
+  .stamp-press,
+  .float-slow,
+  .pulse-ring {
+    animation: none !important;
+  }
+
+  .foil-shimmer {
+    color: var(--brass);
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+  }
 }

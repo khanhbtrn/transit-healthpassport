@@ -1,41 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, FileUp, Mic, ShieldCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { ApprovalQueue } from "@/components/agent/approval-queue";
+import { DoneLog } from "@/components/agent/done-log";
+import { NeedsPanel } from "@/components/agent/needs-panel";
+import { EntryStamp } from "@/components/brand/entry-stamp";
+import { RouteBriefCard } from "@/components/corridor/route-brief-card";
+import { Reveal } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
-import { buildCorridorBrief } from "@/lib/corridor/knowledge";
+import {
+  buildCorridorBrief,
+  type CommunityLink,
+} from "@/lib/corridor/knowledge";
+import { getIntentHomeActions } from "@/lib/journey/next-actions";
 import { useTransitStore } from "@/lib/store/use-transit-store";
-import { cn } from "@/lib/utils";
-
-function getNextStep(state: {
-  hasHistory: boolean;
-  transitionReady: boolean;
-  destinationLabel: string;
-}) {
-  if (!state.hasHistory) return null;
-  if (!state.transitionReady) {
-    return {
-      title: `Let Transit prepare your ${state.destinationLabel} move`,
-      href: "/app/relocation",
-      cta: "Start Transit",
-      step: 2,
-    };
-  }
-  return {
-    title: "Your Transit package is ready",
-    href: "/app/arrival",
-    cta: "See your results",
-    step: 4,
-  };
-}
-
-const steps = [
-  { id: 1, label: "History" },
-  { id: 2, label: "Transit" },
-  { id: 3, label: "Ready" },
-];
 
 export default function OverviewPage() {
   const profile = useTransitStore((s) => s.profile);
@@ -49,10 +30,17 @@ export default function OverviewPage() {
   const conditions = useTransitStore((s) => s.conditions);
   const corridorBrief = useTransitStore((s) => s.corridorBrief);
   const setCorridorBrief = useTransitStore((s) => s.setCorridorBrief);
+  const agentNeeds = useTransitStore((s) => s.agentNeeds);
+  const approvals = useTransitStore((s) => s.approvals);
+  const agentDone = useTransitStore((s) => s.agentDone);
+  const resolveAgentNeed = useTransitStore((s) => s.resolveAgentNeed);
+  const setApprovalStatus = useTransitStore((s) => s.setApprovalStatus);
+  const refreshAgentNeeds = useTransitStore((s) => s.refreshAgentNeeds);
 
   const firstName = profile.fullName.split(" ")[0] || "there";
   const destinationLabel =
     profile.destinationCity || profile.destinationCountry || "your destination";
+  const conditionText = conditions.map((c) => c.name).join(", ");
 
   const hasHistory = documents.length > 0 || conversationCompleted;
   const transitionReady = Boolean(
@@ -63,6 +51,10 @@ export default function OverviewPage() {
           appointmentRequest?.status === "prepared" ||
           appointmentRequest?.status === "simulated_sent"))
   );
+  const pendingApprovals = approvals.filter(
+    (a) => a.status === "needs_approval"
+  ).length;
+  const openNeeds = agentNeeds.filter((n) => n.status === "open").length;
 
   useEffect(() => {
     if (!profile.destinationCity && !profile.destinationCountry) return;
@@ -72,182 +64,181 @@ export default function OverviewPage() {
         currentCountry: profile.currentCountry,
         destinationCity: profile.destinationCity,
         destinationCountry: profile.destinationCountry,
-        conditions: conditions.map((c) => c.name).join(", "),
+        conditions: conditionText || profile.primaryConcern,
         primaryConcern: profile.primaryConcern,
       })
     );
+    refreshAgentNeeds();
   }, [
     profile.currentCity,
     profile.currentCountry,
     profile.destinationCity,
     profile.destinationCountry,
     profile.primaryConcern,
-    conditions,
+    conditionText,
     setCorridorBrief,
+    refreshAgentNeeds,
   ]);
 
-  const next = getNextStep({
+  const handleCommunityLinks = useCallback(
+    (links: CommunityLink[]) => {
+      const current = useTransitStore.getState().corridorBrief;
+      if (!current) return;
+      setCorridorBrief({
+        ...current,
+        communityLinks: links,
+      });
+    },
+    [setCorridorBrief]
+  );
+
+  const actions = getIntentHomeActions({
+    intent: profile.journeyIntent || "continue_treatment",
     hasHistory,
     transitionReady,
     destinationLabel,
+    pendingApprovals,
+    openNeeds,
   });
+
+  const primary = actions.find((a) => a.primary) || actions[0];
+  const secondary = actions.filter((a) => a !== primary);
+
+  const clearanceLabel =
+    readinessPercent >= 85
+      ? "Arrival ready"
+      : readinessPercent >= 45
+        ? "In clearance"
+        : "Issuing";
 
   return (
     <div className="space-y-8">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-sm text-muted-foreground">
-            {profile.currentCity && profile.destinationCity
-              ? `${profile.currentCity} → ${profile.destinationCity}`
-              : "Your move"}
-            {` · ${readinessPercent}%`}
-          </p>
-          <h1 className="mt-2 font-display text-4xl tracking-tight md:text-5xl">
-            Hi {firstName}
-          </h1>
-        </div>
-        <div className="hidden items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1.5 text-xs text-muted-foreground shadow-[var(--shadow-soft)] sm:inline-flex">
-          <ShieldCheck className="h-3.5 w-3.5 text-accent" />
-          Private draft
-        </div>
-      </div>
+      <Reveal variant="passport">
+        <section className="passport-page rounded-[1.35rem] p-5 sm:p-7">
+          <div className="relative flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <motion.p
+                initial={{ opacity: 0, letterSpacing: "0.34em" }}
+                animate={{ opacity: 1, letterSpacing: "0.22em" }}
+                transition={{ duration: 0.7 }}
+                className="text-[11px] font-medium uppercase text-[var(--brass)]"
+              >
+                Health passport · Clearance {readinessPercent}%
+              </motion.p>
+              <p className="mt-3 text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                {profile.currentCity && profile.destinationCity
+                  ? `From ${profile.currentCity} · To ${profile.destinationCity}`
+                  : "Corridor pending"}
+              </p>
+              <h1 className="mt-2 font-display text-4xl font-bold tracking-tight md:text-5xl">
+                {firstName}
+              </h1>
+              <p className="mt-2 max-w-lg text-sm text-muted-foreground">
+                Your care corridor is being prepared so you can show up ready.
+                Transit gathers what clinics need; you approve every send.
+              </p>
+            </div>
+            <EntryStamp
+              label={clearanceLabel}
+              sublabel={`${readinessPercent}%`}
+              delay={0.35}
+              className="hidden shrink-0 sm:block"
+            />
+          </div>
+          <div className="mrz-band relative mt-6 -mx-5 overflow-hidden rounded-b-[1.2rem] sm:-mx-7">
+            <motion.p
+              className="px-5 py-2 text-[10px] sm:px-7"
+              initial={{ x: 12, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.25, duration: 0.5 }}
+            >
+              {`P<${(profile.fullName || "HOLDER").replace(/\s+/g, "<").toUpperCase()}<<${(
+                profile.destinationCity || "DEST"
+              )
+                .replace(/\s+/g, "<")
+                .toUpperCase()}<<<`}
+            </motion.p>
+          </div>
+        </section>
+      </Reveal>
+
+      {primary ? (
+        <Reveal variant="passport" delay={0.08}>
+          <section className="passport-page relative overflow-hidden rounded-[1.35rem] p-6 sm:p-8">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-8 -top-10 h-36 w-36 rounded-full bg-[var(--brass)]/10 blur-3xl"
+            />
+            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--brass)]">
+              Next endorsement
+            </p>
+            <h2 className="mt-2 max-w-lg font-display text-3xl font-semibold tracking-tight">
+              {primary.title}
+            </h2>
+            <p className="mt-2 max-w-lg text-sm text-muted-foreground">
+              {primary.description}
+            </p>
+            <motion.div
+              className="mt-6 inline-block"
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button asChild size="lg">
+                <Link href={primary.href}>
+                  {primary.cta}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </motion.div>
+          </section>
+        </Reveal>
+      ) : null}
+
+      <NeedsPanel needs={agentNeeds} onResolve={resolveAgentNeed} />
+
+      {approvals.length > 0 ? (
+        <ApprovalQueue items={approvals} onStatus={setApprovalStatus} />
+      ) : null}
+
+      {agentDone.length > 0 ? <DoneLog items={agentDone} /> : null}
 
       {corridorBrief ? (
-        <motion.section
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="surface-elevated rounded-[1.75rem] p-5"
         >
-          <p className="text-xs tracking-[0.14em] text-accent uppercase">
-            For your route
-          </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {corridorBrief.routeLabel}
-          </p>
-          <ul className="mt-4 space-y-2.5 text-sm leading-snug">
-            {corridorBrief.mustKnow.slice(0, 4).map((item) => (
-              <li key={item} className="flex gap-3">
-                <span className="mt-2 h-px w-3 shrink-0 bg-accent/50" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </motion.section>
+          <RouteBriefCard
+            brief={corridorBrief}
+            fromCountry={profile.currentCountry}
+            toCountry={profile.destinationCountry}
+            fromCity={profile.currentCity}
+            toCity={profile.destinationCity}
+            condition={conditionText || profile.primaryConcern}
+            onLinks={handleCommunityLinks}
+          />
+        </motion.div>
       ) : null}
 
-      {!hasHistory ? (
-        <section className="space-y-3">
-          <p className="text-sm text-muted-foreground">
-            Start with your medical history
-          </p>
-
-          <Link
-            href="/app/documents"
-            className="surface-elevated surface-interactive shine-sweep block rounded-[1.75rem] p-6"
-          >
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-accent-foreground shadow-[0_10px_24px_rgba(31,92,74,0.2)]">
-                <FileUp className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <h2 className="font-display text-2xl tracking-tight">
-                  I have documents
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Drop letters, results, or prescriptions. Transit organises
-                  them.
-                </p>
-              </div>
-              <ArrowRight className="mt-1 h-5 w-5 text-muted-foreground" />
-            </div>
-          </Link>
-
-          <Link
-            href="/app/conversation"
-            className="surface-elevated surface-interactive shine-sweep block rounded-[1.75rem] p-6"
-          >
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-accent-foreground shadow-[0_10px_24px_rgba(31,92,74,0.2)]">
-                <Mic className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <h2 className="font-display text-2xl tracking-tight">
-                  I’m with my doctor
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Tap listen. Transit hears the visit and builds your history.
-                </p>
-              </div>
-              <ArrowRight className="mt-1 h-5 w-5 text-muted-foreground" />
-            </div>
-          </Link>
-        </section>
-      ) : (
-        <motion.section
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="surface-elevated relative overflow-hidden rounded-[1.75rem] p-6 sm:p-8"
-        >
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-accent/10 blur-3xl"
-          />
-          <p className="text-sm text-muted-foreground">Do this next</p>
-          <h2 className="mt-2 max-w-md font-display text-3xl tracking-tight">
-            {next?.title}
-          </h2>
-          {next ? (
-            <Button asChild size="lg" className="mt-6">
-              <Link href={next.href}>
-                {next.cta}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          ) : null}
-        </motion.section>
-      )}
-
-      <section className="grid grid-cols-3 gap-2.5">
-        {steps.map((step, index) => {
-          const done =
-            (step.id === 1 && hasHistory) ||
-            (step.id === 2 && transitionReady) ||
-            (step.id === 3 && transitionReady);
-          const current =
-            (!hasHistory && step.id === 1) ||
-            (hasHistory && !transitionReady && step.id === 2) ||
-            (transitionReady && step.id === 3);
-          return (
-            <motion.div
-              key={step.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 * index }}
-              className={cn(
-                "rounded-2xl border px-2 py-3.5 text-center transition duration-300",
-                done && "border-accent/25 bg-accent-soft/70 shadow-[var(--shadow-soft)]",
-                current && !done && "border-accent/40 bg-card shadow-[var(--shadow)]",
-                !done && !current && "border-border/80 bg-muted/30"
-              )}
+      {secondary.length ? (
+        <section className="grid gap-3 sm:grid-cols-2">
+          {secondary.map((action) => (
+            <Link
+              key={action.href + action.title}
+              href={action.href}
+              className="surface-elevated surface-interactive block rounded-[1.5rem] p-5"
             >
-              <div
-                className={cn(
-                  "mx-auto mb-2 flex h-7 w-7 items-center justify-center rounded-full text-xs",
-                  done
-                    ? "bg-accent text-accent-foreground"
-                    : current
-                      ? "bg-foreground text-background"
-                      : "bg-muted text-muted-foreground"
-                )}
-              >
-                {done ? <Check className="h-3.5 w-3.5" /> : step.id}
-              </div>
-              <p className="text-xs font-medium">{step.label}</p>
-            </motion.div>
-          );
-        })}
-      </section>
+              <p className="font-display text-xl tracking-tight">
+                {action.title}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {action.description}
+              </p>
+              <p className="mt-3 text-sm text-accent">{action.cta} →</p>
+            </Link>
+          ))}
+        </section>
+      ) : null}
     </div>
   );
 }

@@ -264,9 +264,11 @@ export const countryProfiles: CountryHealthProfile[] = [
     practicalMustKnow: [
       "Confirm insurance effective date before you need care.",
       "Ask clinics about new-patient wait times for your specialty.",
+      "Students: start with campus health or urgent care for injuries, then establish a primary care clinic; bring vaccine records for school requirements.",
+      "California: many specialists need a referral or insurance authorisation — keep imaging reports handy.",
     ],
     officialHint:
-      "Insurance coverage and public program eligibility are case-specific — verify with your insurer or official program sources.",
+      "Insurance coverage and public program eligibility are case-specific — verify with your insurer, school, or official program sources.",
   },
   {
     id: "india",
@@ -314,21 +316,27 @@ export const countryProfiles: CountryHealthProfile[] = [
     aliases: ["thailand", "bangkok", "chiang mai", "phuket", "pattaya"],
     systemType: "Universal coverage schemes plus strong private hospitals",
     accessModel:
-      "Thai citizens may use public schemes; many expatriates and complex cases use private hospitals in Bangkok/Chiang Mai with international desks.",
+      "Thai citizens may use public schemes; many expatriates and complex cases use private hospitals in Bangkok/Chiang Mai with international desks that book specialists and accept emailed records.",
     firstStepIn:
-      "Contact a private hospital international centre or local clinic for your specialty and send records ahead if possible.",
+      "Email or call a private hospital international centre, send your English clinical pack, confirm payment/insurance, and book specialty (e.g. endocrinology) for arrival week.",
     firstStepOut:
       "Request an English medical report and medication list from your treating hospital.",
     languages: ["Thai", "English common in major private hospitals"],
-    recordsTip: "English medical reports from major private hospitals are usually excellent for transfer.",
+    recordsTip:
+      "English endocrinology letters, insulin regimens, and recent HbA1c are what Bangkok international desks ask for first.",
     medicationReality:
-      "Private hospitals can often continue many therapies, but confirm stock and cost before arrival.",
+      "Private hospital pharmacies in Bangkok often stock common insulins; confirm pump/CGM consumables and brands before you fly. Carry a bridge supply.",
     specialistReality:
-      "Bangkok has broad specialty capacity; smaller cities may need referral to a tertiary centre.",
-    continuityRisks: ["Cost of private specialty care", "Need for hospital registration number"],
+      "Bangkok has strong private endocrinology; book via international desk rather than expecting a European-style GP referral.",
+    continuityRisks: [
+      "Cost of private specialty care",
+      "Need for hospital registration number",
+      "First-week insulin/sensor gaps if supply isn’t carried",
+    ],
     practicalMustKnow: [
-      "Ask about package pricing vs itemised specialty follow-up.",
+      "International desks can pre-register you and hold an appointment if records + payment route are clear.",
       "Send records before the first visit when the hospital allows.",
+      "Ask whether the endocrinology clinic accepts CGM/pump downloads on the first visit.",
     ],
     officialHint:
       "Public scheme eligibility is status-specific; private care depends on payment/insurance.",
@@ -872,6 +880,39 @@ export const countryProfiles: CountryHealthProfile[] = [
     officialHint: "Confirm PhilHealth/private hospital requirements for your case.",
   },
   {
+    id: "angola",
+    name: "Angola",
+    aliases: ["angola", "luanda", "benguela", "lobito", "huambo"],
+    systemType:
+      "Public system with limited capacity plus private clinics/hospitals concentrated in Luanda",
+    accessModel:
+      "Many expatriates and NGO staff use private clinics/hospitals in Luanda. Public facilities exist but quality and wait times vary. Antenatal care is available in private maternity clinics and larger hospitals — book early.",
+    firstStepIn:
+      "Identify a private clinic or hospital in your city (often Luanda) that offers the care you need (e.g. antenatal), confirm languages, fees, and what documents they want for a first visit.",
+    firstStepOut:
+      "Bring vaccination card, any prenatal notes/labs, blood type if known, medication list, and passport/work documents your clinic may ask for.",
+    languages: ["Portuguese", "English in some private/expat clinics"],
+    recordsTip:
+      "Portuguese helps in local clinics. Keep an English master copy for NGO/international clinics.",
+    medicationReality:
+      "Private pharmacies in Luanda stock more reliably than public channels; still confirm prenatal vitamins and any regular meds before you rely on local supply.",
+    specialistReality:
+      "Obstetrics and common specialties are strongest in Luanda private hospitals; complex cases may need regional referral planning.",
+    continuityRisks: [
+      "Private care cost without insurance",
+      "Language friction outside Portuguese",
+      "Appointment scarcity for popular private obstetricians",
+    ],
+    practicalMustKnow: [
+      "Ask clinics about Portuguese vs English consultations and fee schedules up front.",
+      "For pregnancy: book antenatal booking visit early and ask about delivery hospital affiliation.",
+      "Clarify whether your NGO insurance/cash-pay is accepted before the appointment.",
+      "Register/understand any local workplace or residency health requirements your organisation uses.",
+    ],
+    officialHint:
+      "Confirm clinic capability and your organisation’s medical provider list — availability changes by city.",
+  },
+  {
     id: "cambodia",
     name: "Cambodia",
     aliases: ["cambodia", "phnom penh", "siem reap"],
@@ -998,26 +1039,63 @@ export const countryProfiles: CountryHealthProfile[] = [
     officialHint: "NHI enrolment depends on residence/work status — verify officially.",
   },
   {
+    id: "georgia",
+    name: "Georgia",
+    aliases: [
+      "georgia",
+      "sakartvelo",
+      "tbilisi",
+      "batumi",
+      "kutaisi",
+      "republic of georgia",
+    ],
+    systemType: "Mixed public hospitals and private clinics",
+    accessModel:
+      "Care is often hospital/clinic episode-based. English summaries are not automatic — request them explicitly before moving abroad.",
+    firstStepIn:
+      "Choose a hospital/clinic for your specialty and complete local registration with ID and prior records.",
+    firstStepOut:
+      "Request a signed English clinical summary, medication list, and key labs/imaging before you leave (critical for NHS/GP registration abroad).",
+    languages: ["Georgian", "English limited outside private/international desks"],
+    recordsTip:
+      "Insist on English diagnosis, treatment, and meds list; keep Georgian originals.",
+    medicationReality:
+      "Export brand + generic names and doses. Receiving systems will re-prescribe locally.",
+    specialistReality:
+      "Specialty follow-up is clinic-dependent; get a transfer letter while you still have access.",
+    continuityRisks: [
+      "Missing English summary for overseas systems",
+      "Assuming EU-style automatic transfer (Georgia → UK is not automatic)",
+    ],
+    practicalMustKnow: [
+      "Ask your current hospital for one English letter before departure.",
+      "Photograph every key page even if you expect a PDF later.",
+    ],
+    officialHint:
+      "Hospital rules vary — confirm record export with your treating facility.",
+  },
+  {
     id: "italy",
     name: "Italy",
     aliases: ["italy", "italia", "rome", "roma", "milan", "milano", "naples", "turin", "florence"],
     systemType: "SSN regional public system plus private care",
     accessModel:
-      "Public care is regional; you typically need registration/health card processes as applicable. Private specialists can be faster.",
+      "Public care is regional (ASL); private specialists can be faster. Leaving Italy for abroad means requesting an English specialist summary — there is no automatic EU transfer to Thailand.",
     firstStepIn:
       "Clarify SSN registration vs private route in your region, then book specialty care.",
     firstStepOut:
-      "Obtain specialist letters; Italian translation helps.",
+      "Ask your specialist (e.g. endocrinology) for a signed English transfer letter, insulin/device list, recent labs, and a bridge-supply note for travel.",
     languages: ["Italian", "English limited"],
-    recordsTip: "Italian summaries reduce friction; keep English master copy.",
+    recordsTip:
+      "Italian clinic letters are fine locally; for Bangkok, insist on English diagnosis, regimen, and HbA1c.",
     medicationReality:
-      "Local prescriptions required; some therapies are hospital-linked.",
+      "Local prescriptions required; some therapies are hospital-linked. For diabetes, export brand + generic insulin names and device model.",
     specialistReality:
-      "Public specialty waits vary by region; private can bridge.",
-    continuityRisks: ["Regional bureaucracy", "Language"],
+      "Public specialty waits vary by region; private can bridge. Use today’s visit to capture the transfer letter.",
+    continuityRisks: ["Regional bureaucracy", "Language", "Missing English summary for overseas clinics"],
     practicalMustKnow: [
       "Learn your ASL/region first step early.",
-      "Bring a translated medication list.",
+      "Before leaving Europe: English med list + signed specialty summary in one PDF if possible.",
     ],
     officialHint: "SSN access depends on residence/status — verify with official regional sources.",
   },
@@ -1263,6 +1341,17 @@ export function detectCountry(
   // Prefer longer alias matches to avoid weak hits
   let best: { profile: CountryHealthProfile; score: number } | null = null;
   for (const profile of countryProfiles) {
+    // "Georgia" the US state vs Georgia the country
+    if (
+      profile.id === "georgia" &&
+      (/united states|\busa\b|\bu\.s\.|atlanta|savannah/.test(blob) ||
+        (!/tbilisi|batumi|kutaisi|sakartvelo|republic of georgia/.test(blob) &&
+          /\bgeorgia\b/.test(blob) &&
+          /,\s*georgia|\bga\b/.test(blob) &&
+          /united states|usa|atlanta|savannah/.test(blob)))
+    ) {
+      continue;
+    }
     for (const alias of profile.aliases) {
       if (blob.includes(alias)) {
         const score = alias.length;

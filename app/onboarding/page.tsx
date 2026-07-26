@@ -9,14 +9,21 @@ import { useTransitStore } from "@/lib/store/use-transit-store";
 function OnboardingGate() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const seedAlessiaJourney = useTransitStore((s) => s.seedAlessiaJourney);
   const seedMariaJourney = useTransitStore((s) => s.seedMariaJourney);
 
   useEffect(() => {
-    if (searchParams.get("demo") === "maria") {
+    const demo = searchParams.get("demo");
+    if (demo === "alessia") {
+      seedAlessiaJourney();
+      router.replace("/app/overview");
+      return;
+    }
+    if (demo === "maria") {
       seedMariaJourney();
       router.replace("/app/overview");
     }
-  }, [searchParams, seedMariaJourney, router]);
+  }, [searchParams, seedAlessiaJourney, seedMariaJourney, router]);
 
   return <StartExperience />;
 }

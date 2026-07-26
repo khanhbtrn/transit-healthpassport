@@ -25,7 +25,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative min-h-screen">
-      <div className="pointer-events-none absolute inset-0 transit-grid opacity-50" />
+      <div className="pointer-events-none absolute inset-0 transit-grid opacity-40" />
+      <div className="pointer-events-none absolute inset-0 passport-guilloche opacity-40" />
       <AppNav />
       <main className="relative mx-auto max-w-3xl px-4 py-8 pb-28 sm:px-6 sm:pb-12">
         <PageEnter key={pathname}>{children}</PageEnter>

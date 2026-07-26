@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
   calculateReadiness,
+  createAlessiaSeed,
   createEmptyState,
   createJourneyFromOnboarding,
   createMariaSeed,
@@ -11,9 +12,14 @@ import {
   type TransitState,
 } from "@/lib/demo/seed";
 import type { CorridorBrief } from "@/lib/corridor/knowledge";
+import { buildAgentNeeds } from "@/lib/agent/plan";
 import type {
+  AgentDoneItem,
   AgentMessage,
+  AgentNeed,
   AppointmentRequest,
+  ApprovalItem,
+  ApprovalStatus,
   Condition,
   ContinuityRisk,
   DoctorCandidate,
@@ -28,6 +34,7 @@ import type {
 
 interface TransitStore extends TransitState {
   startJourney: (input: OnboardingInput) => void;
+  seedAlessiaJourney: () => void;
   seedMariaJourney: () => void;
   resetJourney: () => void;
   setOnboarded: (value: boolean) => void;
@@ -55,6 +62,13 @@ interface TransitStore extends TransitState {
   setSpecialistRequestDraft: (draft: string) => void;
   markTransitionComplete: () => void;
   refreshReadiness: () => void;
+  setAgentNeeds: (needs: AgentNeed[]) => void;
+  resolveAgentNeed: (id: string, status?: "done" | "skipped") => void;
+  refreshAgentNeeds: () => void;
+  setApprovals: (items: ApprovalItem[]) => void;
+  setApprovalStatus: (id: string, status: ApprovalStatus) => void;
+  setAgentDone: (items: AgentDoneItem[]) => void;
+  appendAgentDone: (item: AgentDoneItem) => void;
 }
 
 function withReadiness(state: TransitState): Pick<TransitState, "readinessPercent"> {
@@ -85,6 +99,11 @@ export const useTransitStore = create<TransitStore>()(
 
       startJourney: (input) => {
         const seed = createJourneyFromOnboarding(input);
+        set({ ...seed, ...withReadiness(seed) });
+      },
+
+      seedAlessiaJourney: () => {
+        const seed = createAlessiaSeed();
         set({ ...seed, ...withReadiness(seed) });
       },
 
@@ -208,8 +227,26 @@ export const useTransitStore = create<TransitStore>()(
       },
 
       setConversationCompleted: (value) => {
-        const next = { ...get(), conversationCompleted: value };
-        set({ conversationCompleted: value, ...withReadiness(next) });
+        const state = get();
+        const agentNeeds = buildAgentNeeds({
+          profile: state.profile,
+          conditions: state.conditions,
+          documents: state.documents,
+          conversationCompleted: value,
+          brief: state.corridorBrief,
+        }).map((need) => {
+          const prev = state.agentNeeds.find((n) => n.id === need.id);
+          if (prev?.status === "done" || prev?.status === "skipped") {
+            return { ...need, status: prev.status };
+          }
+          return need;
+        });
+        const next = { ...state, conversationCompleted: value, agentNeeds };
+        set({
+          conversationCompleted: value,
+          agentNeeds,
+          ...withReadiness(next),
+        });
       },
 
       approveFacts: (facts) => {
@@ -236,8 +273,9 @@ export const useTransitStore = create<TransitStore>()(
       },
 
       addDocument: (document) => {
-        const documents = [document, ...get().documents];
-        const journeySteps = get().journeySteps.map((step) =>
+        const state = get();
+        const documents = [document, ...state.documents];
+        const journeySteps = state.journeySteps.map((step) =>
           step.id === "records_collected"
             ? {
                 ...step,
@@ -246,8 +284,21 @@ export const useTransitStore = create<TransitStore>()(
               }
             : step
         );
-        const next = { ...get(), documents, journeySteps };
-        set({ documents, journeySteps, ...withReadiness(next) });
+        const agentNeeds = buildAgentNeeds({
+          profile: state.profile,
+          conditions: state.conditions,
+          documents,
+          conversationCompleted: state.conversationCompleted,
+          brief: state.corridorBrief,
+        }).map((need) => {
+          const prev = state.agentNeeds.find((n) => n.id === need.id);
+          if (prev?.status === "done" || prev?.status === "skipped") {
+            return { ...need, status: prev.status };
+          }
+          return need;
+        });
+        const next = { ...state, documents, journeySteps, agentNeeds };
+        set({ documents, journeySteps, agentNeeds, ...withReadiness(next) });
       },
 
       updateDocument: (id, patch) => {
@@ -286,9 +337,88 @@ export const useTransitStore = create<TransitStore>()(
       refreshReadiness: () => {
         set(withReadiness(get()));
       },
+
+      setAgentNeeds: (needs) => set({ agentNeeds: needs }),
+
+      resolveAgentNeed: (id, status = "done") => {
+        set({
+          agentNeeds: get().agentNeeds.map((need) =>
+            need.id === id ? { ...need, status } : need
+          ),
+        });
+      },
+
+      refreshAgentNeeds: () => {
+        const state = get();
+        const agentNeeds = buildAgentNeeds({
+          profile: state.profile,
+          conditions: state.conditions,
+          documents: state.documents,
+          conversationCompleted: state.conversationCompleted,
+          brief: state.corridorBrief,
+        }).map((need) => {
+          const prev = state.agentNeeds.find((n) => n.id === need.id);
+          if (prev?.status === "done" || prev?.status === "skipped") {
+            return { ...need, status: prev.status };
+          }
+          return need;
+        });
+        set({ agentNeeds });
+      },
+
+      setApprovals: (items) => set({ approvals: items }),
+
+      setApprovalStatus: (id, status) => {
+        const approvals = get().approvals.map((item) =>
+          item.id === id ? { ...item, status } : item
+        );
+        const approved = approvals.find((a) => a.id === id);
+        let patch: Partial<TransitState> = { approvals };
+
+        if (approved?.kind === "appointment_request" && status === "approved") {
+          const request = get().appointmentRequest;
+          if (request) {
+            patch.appointmentRequest = { ...request, status: "approved" };
+          }
+        }
+        if (
+          approved?.kind === "appointment_request" &&
+          status === "simulated_sent"
+        ) {
+          const request = get().appointmentRequest;
+          if (request) {
+            patch.appointmentRequest = {
+              ...request,
+              status: "simulated_sent",
+            };
+          }
+        }
+        if (approved?.kind === "handoff_letter" && status === "approved") {
+          const handoff = {
+            ...get().handoff,
+            approvedAt: new Date().toISOString(),
+          };
+          patch.handoff = handoff;
+          patch.handoffApproved = true;
+        }
+        if (
+          approved?.kind === "clinic_application" &&
+          (status === "approved" || status === "simulated_sent")
+        ) {
+          // keep approvals as source of truth; demo send is the approval status
+        }
+
+        const next = { ...get(), ...patch };
+        set({ ...patch, ...withReadiness(next) });
+      },
+
+      setAgentDone: (items) => set({ agentDone: items }),
+
+      appendAgentDone: (item) =>
+        set({ agentDone: [...get().agentDone, item] }),
     }),
     {
-      name: "transit-user-v2",
+      name: "transit-user-v3",
       merge: (persisted, current) => {
         const p = (persisted || {}) as Partial<TransitState>;
         return {
@@ -301,10 +431,28 @@ export const useTransitStore = create<TransitStore>()(
             weightKg: p.profile?.weightKg ?? "",
             sex: p.profile?.sex ?? "",
             reasonForMove: p.profile?.reasonForMove ?? "",
+            journeyIntent:
+              p.profile?.journeyIntent ?? current.profile.journeyIntent,
+            carePreferences: {
+              ...current.profile.carePreferences,
+              ...p.profile?.carePreferences,
+              budget:
+                p.profile?.carePreferences?.budget ??
+                current.profile.carePreferences.budget,
+              languages:
+                p.profile?.carePreferences?.languages ??
+                current.profile.carePreferences.languages,
+              notes:
+                p.profile?.carePreferences?.notes ??
+                current.profile.carePreferences.notes,
+            },
           },
           transitionComplete: p.transitionComplete ?? false,
           spokenHandoffUrl: p.spokenHandoffUrl ?? null,
           specialistRequestDraft: p.specialistRequestDraft ?? "",
+          agentNeeds: p.agentNeeds ?? [],
+          approvals: p.approvals ?? [],
+          agentDone: p.agentDone ?? [],
         };
       },
       partialize: (state) => ({
@@ -337,6 +485,9 @@ export const useTransitStore = create<TransitStore>()(
         transitionComplete: state.transitionComplete,
         spokenHandoffUrl: state.spokenHandoffUrl,
         specialistRequestDraft: state.specialistRequestDraft,
+        agentNeeds: state.agentNeeds,
+        approvals: state.approvals,
+        agentDone: state.agentDone,
       }),
     }
   )

@@ -1,4 +1,4 @@
-import type { Profile } from "@/lib/types";
+import type { JourneyIntent, Profile } from "@/lib/types";
 
 export type MissingField = {
   key: string;
@@ -14,8 +14,10 @@ export function getMissingProfileFields(input: {
   destinationCountry: string;
   conditions: string;
   primaryConcern?: string;
+  journeyIntent?: JourneyIntent;
 }): MissingField[] {
   const missing: MissingField[] = [];
+  const intent = input.journeyIntent || "continue_treatment";
 
   if (!input.fullName.trim()) {
     missing.push({ key: "fullName", label: "Your name" });
@@ -32,10 +34,22 @@ export function getMissingProfileFields(input: {
       label: "Where you’re moving to",
     });
   }
-  if (!input.conditions.trim() && !input.primaryConcern?.trim()) {
+
+  const hasHealthSignal =
+    Boolean(input.conditions.trim()) ||
+    Boolean(input.primaryConcern?.trim());
+
+  // Rebuild-history can start with almost nothing clinical.
+  // Other intents need at least a concern or condition.
+  if (intent !== "rebuild_history" && !hasHealthSignal) {
     missing.push({
       key: "health",
-      label: "Your condition",
+      label:
+        intent === "second_look"
+          ? "What you want checked"
+          : intent === "set_up_care"
+            ? "What care you need"
+            : "Your condition",
     });
   }
 
@@ -51,5 +65,33 @@ export function getMissingFromProfile(profile: Profile, conditionsText = "") {
     destinationCountry: profile.destinationCountry,
     conditions: conditionsText,
     primaryConcern: profile.primaryConcern,
+    journeyIntent: profile.journeyIntent,
   });
 }
+
+export const journeyIntentCopy: Record<
+  JourneyIntent,
+  { title: string; blurb: string; example: string }
+> = {
+  second_look: {
+    title: "I need a check in my new city",
+    blurb: "You already saw a doctor — bring the record and get a local review.",
+    example: "Ultrasound follow-up, second opinion, “just to be sure”",
+  },
+  set_up_care: {
+    title: "Help me set up care after I move",
+    blurb: "Registration, clinics, and appointments that fit language and budget.",
+    example: "Pregnancy care, GP registration, first local clinic",
+  },
+  rebuild_history: {
+    title: "Help me piece my records together",
+    blurb: "Fragmented vaccines, letters, and injuries — Transit organises them.",
+    example: "Missing shots, old scans, incomplete files",
+  },
+  continue_treatment: {
+    title: "I need treatment to continue without gaps",
+    blurb:
+      "Your agent asks for docs, prepares booking and handoff, and waits for your approval before any send.",
+    example: "Chronic illness, specialty meds, specialist transfer",
+  },
+};

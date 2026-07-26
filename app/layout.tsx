@@ -1,22 +1,23 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Outfit, Syne } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const display = Fraunces({
+const display = Syne({
   variable: "--font-display",
   subsets: ["latin"],
+  weight: ["600", "700", "800"],
 });
 
-const body = Manrope({
+const body = Outfit({
   variable: "--font-body",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Transit — Your healthcare moves with you",
+  title: "Transit · Health passport for care across borders",
   description:
-    "Transit is an AI healthcare relocation agent that prepares medical history, destination care plans, and clinical handoffs before you move.",
+    "Transit is your health passport when you move countries: corridor-aware care continuity, clinic-ready records, and handoffs prepared before you land.",
 };
 
 export default function RootLayout({

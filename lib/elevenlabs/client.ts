@@ -27,7 +27,8 @@ export async function synthesizeSpeech(text: string): Promise<{
       },
       body: JSON.stringify({
         text,
-        model_id: "eleven_multilingual_v2",
+        // Latest ElevenLabs speech model (most expressive; multilingual)
+        model_id: process.env.ELEVENLABS_MODEL_ID || "eleven_v3",
       }),
     }
   );

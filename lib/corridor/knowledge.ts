@@ -2,9 +2,14 @@ import {
   detectCountry,
   type CountryHealthProfile,
 } from "@/lib/corridor/countries";
+import type { CommunityLink } from "@/lib/corridor/community";
+
+export type { CommunityLink };
 
 export interface CorridorBrief {
   routeLabel: string;
+  /** Short plain-language picture of the corridor */
+  overview: string;
   summary: string;
   mustKnow: string[];
   registrationNotes: string;
@@ -13,6 +18,7 @@ export interface CorridorBrief {
   medicationNotes: string;
   specialistNotes: string;
   officialReminders: string[];
+  communityLinks?: CommunityLink[];
   generatedAt: string;
   source: "knowledge" | "ai";
   fromCountryId?: string;
@@ -21,12 +27,94 @@ export interface CorridorBrief {
 
 type Playbook = Omit<
   CorridorBrief,
-  "routeLabel" | "generatedAt" | "source" | "fromCountryId" | "toCountryId"
+  | "routeLabel"
+  | "generatedAt"
+  | "source"
+  | "fromCountryId"
+  | "toCountryId"
+  | "communityLinks"
 >;
 
 /** High-value corridor overrides when we have extra route-specific detail. */
 const corridorOverrides: Record<string, Playbook> = {
+  "philippines->angola": {
+    overview:
+      "Philippines → Angola: private Luanda clinics are the usual expat/NGO path. Portuguese helps; book antenatal early and confirm fees/language.",
+    summary:
+      "Philippines → Angola care setup for NGO/expat moves usually means private clinics in Luanda, Portuguese or English access, and clear fee expectations.",
+    mustKnow: [
+      "Before leaving: prenatal notes, vaccine card, blood type if known, and any labs.",
+      "In Luanda: book a private antenatal/primary clinic; ask about Portuguese vs English and total visit cost.",
+      "Confirm whether NGO insurance or cash-pay is accepted before the first appointment.",
+      "Ask what registration/work health docs your organisation expects.",
+    ],
+    registrationNotes:
+      "There is no single NHS-style GP register. Start by choosing a private clinic/hospital and completing their new-patient process; follow any NGO medical onboarding.",
+    careSystemNotes:
+      "Angola public capacity is limited; private Luanda care is the practical route for many NGO staff. Obstetrics is appointment-sensitive.",
+    languageNotes:
+      "Portuguese is default locally. Request English-speaking clinicians if needed — availability varies.",
+    medicationNotes:
+      "Confirm prenatal vitamins and any regular medicines are stocked locally; bring a bridge supply if advised.",
+    specialistNotes:
+      "For pregnancy, identify antenatal clinic + delivery hospital affiliation early.",
+    officialReminders: [
+      "Verify clinic capability and your organisation’s preferred provider list.",
+      "Community and clinic advice is not a substitute for clinical care.",
+    ],
+  },
+  "russia->uk": {
+    overview:
+      "Russia → UK: bring the imaging/report in English if possible, then use GP or private clinic for a local review.",
+    summary:
+      "For a Moscow clinic finding moving to London, UK review usually starts with records + GP/private appointment — not an automatic specialist transfer.",
+    mustKnow: [
+      "Bring ultrasound/report + clinician note; translate key lines to English.",
+      "In the UK: GP registration or private clinic for a check — ask for musculoskeletal/ultrasound review as needed.",
+      "Do not assume the Moscow conclusion is accepted without local review if you’re worried.",
+      "Verify NHS entitlement if you plan to use NHS pathways.",
+    ],
+    registrationNotes:
+      "For NHS: register with a GP when you have an address. For a faster check, private clinics can review imaging sooner.",
+    careSystemNotes:
+      "UK care is GP-gatekept on the NHS; private options exist for quicker imaging review.",
+    languageNotes: "English summary of the ultrasound conclusion is highly useful.",
+    medicationNotes:
+      "Usually not medication-led for simple soft-tissue checks — focus on the report and exam.",
+    specialistNotes:
+      "Orthopedics/ultrasound follow-up can be GP-referred or booked privately depending on urgency and entitlement.",
+    officialReminders: [
+      "Check official NHS guidance for registration/entitlement.",
+    ],
+  },
+  "china->us": {
+    overview:
+      "China → US (e.g. California): insurance/campus health first, then assemble vaccines + injury records for regular care.",
+    summary:
+      "International students often need campus/urgent care for injuries and a primary clinic, plus a reconstructed vaccine/record pack for school requirements.",
+    mustKnow: [
+      "Collect every vaccine scrap, hospital note, and imaging — even partial Chinese records help.",
+      "Translate key pages; list vaccines you remember with approximate dates.",
+      "For an untreated injury: urgent care or campus health first, then follow-up imaging if advised.",
+      "Activate student/private insurance before non-emergency visits when possible.",
+    ],
+    registrationNotes:
+      "No national GP register. Establish campus health or a primary care clinic; specialists often need referral/insurance OK.",
+    careSystemNotes:
+      "US care is insurance-driven. Students should learn campus health hours, urgent care, and ER thresholds.",
+    languageNotes:
+      "English records preferred. Keep Chinese originals as backup.",
+    medicationNotes:
+      "Bring medication names as generics; US pharmacies will need a local prescription for ongoing drugs.",
+    specialistNotes:
+      "Orthopedics for fractures may start in urgent care; keep all imaging for the specialist.",
+    officialReminders: [
+      "School immunisation requirements are official — verify with your campus health centre.",
+    ],
+  },
   "vietnam->uk": {
+    overview:
+      "Vietnam hospital/clinic care → UK GP-led NHS (plus private). Expect registration, English records, and a local re-prescribe step.",
     summary:
       "Vietnam → UK: you are moving from a hospital-letter culture into an NHS system where GP registration is usually the gateway to specialists. English records, entitlement checks, and a medication bridge plan matter more than a perfect folder of Vietnamese paperwork.",
     mustKnow: [
@@ -53,6 +141,8 @@ const corridorOverrides: Record<string, Playbook> = {
     ],
   },
   "uk->spain": {
+    overview:
+      "UK NHS → Spain’s regional public system and private clinics. Decide your route early and prepare a Spanish handoff.",
     summary:
       "UK → Spain: leave with a signed specialist letter and decide public vs private Spanish routes before you need care. Spanish (and Catalan in Catalonia) handoffs reduce first-visit friction.",
     mustKnow: [
@@ -75,6 +165,88 @@ const corridorOverrides: Record<string, Playbook> = {
     officialReminders: [
       "Verify Spanish eligibility/registration with official authorities.",
       "Transit does not determine legal eligibility.",
+    ],
+  },
+  "vietnam->russia": {
+    overview:
+      "You are moving from Vietnam to Russia. Vietnam care is often hospital- or clinic-based; Russia mixes compulsory medical insurance public pathways with private clinics in cities like Moscow. If you need ongoing specialty care (for example oncology), plan the Russian route before you fly — do not assume your Vietnam hospital can automatically transfer you.",
+    summary:
+      "Vietnam → Russia: leave with a complete English (or Russian) clinical pack, then choose public attachment vs private clinic in your Russian city. Specialty continuity usually means a private or tertiary centre with records sent ahead.",
+    mustKnow: [
+      "Before you leave Vietnam: get a signed hospital summary covering diagnosis (stage and histology if cancer), treatment history, latest imaging/pathology, current medicines with generic names, and last/next treatment dates. Ask for English if possible; keep Vietnamese originals.",
+      "In Russia: decide early whether you will use a public polyclinic/hospital pathway (often needs local insurance attachment) or a private clinic in a major city for faster specialty access. Moscow and Saint Petersburg have more private oncology and specialty options.",
+      "Medicines: Russian trade names often differ — list every drug by INN/generic name, dose, and schedule. Carry a bridge supply for travel and the first clinic visit; a Russian clinician will usually need to review and re-prescribe.",
+      "Records: translate key Vietnamese pages into English or Russian. Include diagnosis codes/names, staging, treatment protocol names, and copies of pathology and imaging reports — not only conclusions.",
+      "On arrival: contact the chosen clinic’s new-patient or oncology desk with your pack before or as soon as you land if treatment timing is critical. Confirm language support (Russian is default; English is limited outside private international desks).",
+    ],
+    registrationNotes:
+      "Clarify whether your status allows attachment to the public compulsory medical insurance system. Many newcomers use private clinics first while public attachment is sorted. Bring passport/ID and your clinical pack to the first visit.",
+    careSystemNotes:
+      "Russia: public polyclinic/hospital pathways exist alongside a large private sector in major cities. Private clinics are often the practical first step for complex specialty continuity when language and speed matter.",
+    languageNotes:
+      "Russian is the working language in most public facilities. Private clinics in Moscow may offer some English — confirm before booking. Keep an English master summary even if you also translate into Russian.",
+    medicationNotes:
+      "Use INN/generic names. Specialty oncology and chronic therapies often need local specialist approval and may not match Vietnam brand packaging. Plan supply through the first Russian review.",
+    specialistNotes:
+      "For oncology or other tertiary care, identify a suitable centre in your destination city (often Moscow private or major oncology institutes) and send records ahead when the clinic allows.",
+    officialReminders: [
+      "Insurance attachment and foreign-patient rules are status-specific — verify with the clinic and official sources for your situation.",
+      "Community tips are not a substitute for clinician advice or official eligibility rules.",
+    ],
+  },
+  "georgia->uk": {
+    overview:
+      "Georgia → UK: leave with an English clinical pack, then enter via NHS GP registration. Specialists are usually referral-based — don’t cold-book a hospital as if it were a private EU clinic.",
+    summary:
+      "Tbilisi/Georgia → UK means switching into the NHS model: GP first, then specialty. English records and entitlement checks matter more than collecting every Georgian document.",
+    mustKnow: [
+      "UK care is mostly NHS: register with a GP near your address first — specialists are often referral-based.",
+      "Before leaving Georgia: get one English hospital/clinic letter + exact medication list.",
+      "In the UK: use NHS Find a GP (nhs.uk), register, then request the specialty referral you need.",
+      "Confirm NHS entitlement for your visa/status on official NHS/GOV.UK pages — do not assume automatic cover.",
+      "Community tip pattern: people who move from non-EU systems get stuck when they try to book hospital specialists directly without a GP.",
+    ],
+    registrationNotes:
+      "First practical step after you have a UK address: register with a GP via https://www.nhs.uk/service-search/find-a-gp. Bring ID, proof of address if you have it, and your English clinical summary.",
+    careSystemNotes:
+      "The NHS is GP-gatekept for most specialty care. Private clinics exist for faster review but do not replace GP registration for ongoing NHS care.",
+    languageNotes:
+      "English clinical summary is essential. Keep Georgian originals as backup.",
+    medicationNotes:
+      "UK clinicians usually re-prescribe. Plan a bridge supply; map generics and doses clearly.",
+    specialistNotes:
+      "Identify the specialty (e.g. endocrinology). After GP registration, ask for referral — or use a researched private clinic only if you need a bridge review while NHS access starts.",
+    officialReminders: [
+      "Verify NHS entitlement on official NHS / GOV.UK sources for your status.",
+      "Community threads are tips, not eligibility decisions.",
+    ],
+  },
+  "italy->thailand": {
+    overview:
+      "Italy (SSN / private specialty) → Thailand private international hospitals. Expats usually book Bangkok endocrinology via an international desk — not a European GP referral chain.",
+    summary:
+      "Milan → Bangkok with type 1 diabetes: leave Europe with an English endocrinology letter, insulin/device list, and labs. In Bangkok, private hospitals with international centres book specialty visits and can often continue insulin/CGM — if records arrive ahead and payment/insurance is clear.",
+    mustKnow: [
+      "You’re leaving a European specialty culture for Thai private hospital booking — call/email an international patient centre; they schedule endocrinology when paperwork and payment route are ready.",
+      "Ask your Italian endocrinologist for a signed English summary: diagnosis, regimen (basal/bolus or pump), complications screen, last HbA1c, allergies, and emergency plan.",
+      "Carry a bridge supply of insulin, needles/pump consumables, and CGM sensors in hand luggage with a prescription letter — expat diabetes threads treat this as non-negotiable for first week.",
+      "Book the Bangkok visit for arrival day or the next working day; send records before you fly so the slot is real, not a walk-in hope.",
+      "Public Thai schemes rarely help new work expats for specialty diabetes — plan private care first, then verify any workplace insurance.",
+      "English is common at major Bangkok private hospitals; Thai is default elsewhere. Request an English-speaking endocrinologist via the international desk.",
+    ],
+    registrationNotes:
+      "First practical step: open a new-patient / international desk file at a Bangkok private hospital (or your city’s equivalent). Bring passport, work docs if asked, payment method, and English clinical pack. There is no Italian-style ASL transfer.",
+    careSystemNotes:
+      "Italy mixes regional SSN with private specialists. Thailand for complex chronic care (esp. T1D) is usually private hospital outpatient + pharmacy inside the hospital network. International desks exist to handle booking, records, and language.",
+    languageNotes:
+      "English clinical summary is the working language for Bangkok international clinics. Keep Italian originals as backup.",
+    medicationNotes:
+      "Major Bangkok private pharmacies often stock common insulins and can continue many regimens after local clinician review — confirm brands/devices before arrival. Do not rely on airport or hotel pharmacies for pump supplies.",
+    specialistNotes:
+      "Target endocrinology / diabetes clinic at a tertiary private hospital. Ask for the earliest slot after landing and whether CGM/pump downloads are accepted.",
+    officialReminders: [
+      "Hospital and immigration/insurance rules are status-specific — verify with your employer and the hospital desk.",
+      "Community tips (Reddit/forums) help with bureaucracy, not clinical dosing.",
     ],
   },
 };
@@ -118,6 +290,7 @@ function composeFromCountries(
 
   if (!from && !to) {
     return {
+      overview: `${fromLabel} → ${toLabel}: confirm how new patients enter care at destination, and leave with a complete paper pack.`,
       summary: `We could not match a detailed healthcare profile for ${fromLabel} → ${toLabel} yet. Still: leave with a signed clinical summary, exact medication list, and confirm the destination’s first registration step before you travel.`,
       mustKnow: unique([
         concern ? `Your priority: ${concern}.` : "",
@@ -126,9 +299,7 @@ function composeFromCountries(
           : "Collect a current signed clinical summary before you travel.",
         `Learn the first official or practical registration step in ${toLabel}.`,
         "Confirm medication supply across the journey and first destination appointment.",
-        "Carry paper and digital copies — do not rely on one hospital’s archive.",
-        "Verify eligibility and facility capability with official/local sources.",
-      ]),
+      ]).slice(0, 4),
       registrationNotes: `Confirm the official first registration or access step for ${toLabel}.`,
       careSystemNotes:
         "Healthcare systems differ in gatekeeping, insurance, and specialty access. A specific handoff beats generic advice.",
@@ -144,32 +315,84 @@ function composeFromCountries(
     };
   }
 
-  const summary = [
+  const blob = `${condition || ""} ${concern || ""}`.toLowerCase();
+  const isPregnancy = /pregnan|antenatal|prenatal|obstetric/.test(blob);
+  const isStudent = /student|campus|university|college|visa/.test(blob);
+  const isImagingCheck =
+    /ultrasound|scan|x-?ray|mri|lump|elbow|second opinion|check/.test(blob);
+
+  const priorityBit = isPregnancy
+    ? "Book antenatal care early and confirm language and fees."
+    : isStudent
+      ? "Activate student or insurance access, then set up primary or campus care."
+      : isImagingCheck
+        ? "Bring imaging reports for a local review."
+        : condition
+          ? `Keep ${condition} continuous — arrive with a transfer pack.`
+          : concern
+            ? concern.replace(/\.$/, "") + "."
+            : "Arrive with a signed summary and medication list.";
+
+  /** Strip pregnancy-only examples when the user's condition is not pregnancy. */
+  function adaptClinicCopy(text: string) {
+    if (isPregnancy) return text;
+    let next = text
+      .replace(/\(e\.g\. antenatal\)/gi, condition ? `(for ${condition})` : "(for your specialty)")
+      .replace(/\s*Antenatal care[^.]*\./gi, "")
+      .replace(/prenatal vitamins and /gi, "")
+      .replace(/prenatal vitamins/gi, "your regular medicines")
+      .replace(/\s+/g, " ")
+      .trim();
+    return next;
+  }
+
+  const destFirstStep = to ? adaptClinicCopy(to.firstStepIn) : "";
+  const destMeds = to ? adaptClinicCopy(to.medicationReality) : "";
+
+  // Short headline only — full steps live in mustKnow below.
+  const overview = [
     `${fromLabel} → ${toLabel}.`,
-    condition ? `Focus: keep ${condition} continuous.` : "",
-    concern ? `Priority: ${concern}.` : "",
+    destFirstStep,
+    priorityBit,
   ]
     .filter(Boolean)
     .join(" ");
 
-  // Short, actionable only — full system detail stays in other fields for the agent.
+  const summary = [
+    `${fromLabel} → ${toLabel}.`,
+    condition ? `Condition focus: ${condition}.` : "",
+    concern ? `Priority: ${concern}.` : "",
+    destFirstStep ? `First access step: ${destFirstStep}` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  // Complete sentences — never truncate mid-thought for patients reading this.
   const mustKnow = unique([
-    from
-      ? `Before leaving ${from.name}: get a signed summary, recent results, and exact meds/doses (paper + photos).`
-      : `Before leaving: get a signed clinical summary and medication list.`,
+    isPregnancy
+      ? "Before you leave: gather prenatal notes, your vaccine card, blood type if known, and recent labs — keep paper and phone photos."
+      : from
+        ? `Before you leave ${from.name}: get one signed clinical summary from your treating hospital or clinic, plus recent results and an exact list of medicines with doses. Keep paper copies and clear photos of every page.`
+        : "Before you leave: get a signed clinical summary and a complete medication list (paper and photos).",
+    isPregnancy && to
+      ? `In ${to.name}: book antenatal or private clinic care early, and confirm which languages are available and what a visit costs before you arrive.`
+      : isStudent && to
+        ? `In ${to.name}: activate student or health insurance access first, then register with campus health or a primary clinic.`
+        : isImagingCheck && to
+          ? `In ${to.name}: book a GP or private review and bring the imaging report and images with you — do not rely on memory of the findings.`
+          : to
+            ? `In ${to.name}: ${destFirstStep} ${to.languages.length ? `Clinics commonly work in ${to.languages.join(" and ")}.` : ""}`
+            : "On arrival: confirm the first clinic or registration step before you need urgent care.",
     to
-      ? `In ${to.name}: ${shorten(to.firstStepIn, 140)}`
-      : `On arrival: confirm the first clinic/registration step before you need care.`,
-    to
-      ? `Meds in ${to.name}: ${shorten(to.medicationReality, 120)}`
-      : "Plan medication supply through travel and the first destination appointment.",
+      ? `Medicines in ${to.name}: ${destMeds} Carry enough supply for travel plus your first destination appointment, and list every drug by generic (INN) name.`
+      : "Plan medication supply through travel and your first destination appointment; list every drug by generic name.",
     from && to
-      ? `Records: prepare for ${to.languages[0] || "local language"}/English — ${shorten(from.recordsTip, 100)}`
-      : "Carry paper and digital copies of every key record.",
+      ? `Records: ${from.recordsTip} Destination clinicians in ${to.name} commonly need ${to.languages[0] || "the local language"} and/or English — bring both originals and a clear English summary when you can.`
+      : "Carry paper and digital copies of every key record, with an English summary if your originals are in another language.",
     condition
-      ? `For ${condition}: write last dose / next due date and what must not stop.`
+      ? `For ${condition}: ask your current clinician what must not be interrupted in the first 2–4 weeks after you arrive, and write that into the transfer letter.`
       : "",
-  ]).slice(0, 4);
+  ]).slice(0, 5);
 
   const languageNotes = unique([
     from
@@ -186,6 +409,7 @@ function composeFromCountries(
   ]);
 
   return {
+    overview,
     summary,
     mustKnow:
       mustKnow.length > 0
@@ -255,37 +479,29 @@ export function buildCorridorBrief(input: {
     input.destinationCountry || "—"
   }`;
 
-  const overrideKey =
-    from && to ? `${from.id}->${to.id}` : "";
-  const playbook =
-    (overrideKey && corridorOverrides[overrideKey]) ||
-    composeFromCountries(from, to, input);
+  const overrideKey = from && to ? `${from.id}->${to.id}` : "";
+  const composed = composeFromCountries(from, to, input);
+  const override = overrideKey ? corridorOverrides[overrideKey] : undefined;
 
-  const condition = input.conditions?.trim();
-  const concern = input.primaryConcern?.trim();
-  const mustKnow = [...playbook.mustKnow];
-
-  // Ensure condition/concern are visible near the top without duplicating if already composed
-  if (
-    condition &&
-    !mustKnow.some((item) => item.toLowerCase().includes(condition.toLowerCase()))
-  ) {
-    mustKnow.unshift(
-      `Condition focus (${condition}): make sure the receiving clinician in ${
-        to?.name || input.destinationCountry || "your destination"
-      } can see diagnosis detail, recent monitoring, and what must not be interrupted.`
-    );
-  }
-  if (
-    concern &&
-    !mustKnow.some((item) => item.toLowerCase().includes(concern.toLowerCase()))
-  ) {
-    mustKnow.unshift(`Your stated priority: ${concern}.`);
-  }
+  // Prefer researched corridor overrides (efficient zero-knowledge steps).
+  const playbook: Playbook = override
+    ? {
+        ...composed,
+        ...override,
+        overview: override.overview || composed.overview,
+        summary: override.summary || composed.summary,
+        mustKnow: (override.mustKnow?.length
+          ? override.mustKnow
+          : composed.mustKnow
+        ).slice(0, 5),
+      }
+    : composed;
 
   return {
     ...playbook,
-    mustKnow: mustKnow.slice(0, 8),
+    overview: playbook.overview || playbook.summary,
+    mustKnow: playbook.mustKnow.slice(0, 5),
+    communityLinks: [],
     routeLabel,
     generatedAt: new Date().toISOString(),
     source: "knowledge",
