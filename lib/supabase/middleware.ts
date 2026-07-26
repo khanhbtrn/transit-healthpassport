@@ -4,8 +4,9 @@ import {
   getSupabaseAnonKey,
   getSupabaseUrl,
   isSupabaseConfigured,
-} from "@/lib/supabase/env";
+} from "./env";
 
+/** Kept for local reuse; Edge middleware lives in root middleware.ts (no @/ imports). */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -30,7 +31,6 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // Refresh session if present; demo mode does not require auth.
   await supabase.auth.getUser();
   return supabaseResponse;
 }
