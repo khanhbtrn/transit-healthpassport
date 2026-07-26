@@ -1,0 +1,92 @@
+import type { TimelineEvent } from "@/lib/types";
+
+export const mariaTimeline: TimelineEvent[] = [
+  {
+    id: "tl-2017",
+    eventDate: "2017-01-01",
+    approximateDate: true,
+    eventType: "symptoms",
+    title: "Symptoms began",
+    description:
+      "Abdominal pain, diarrhoea, and fatigue prompted further investigation.",
+    sourceType: "patient_reported",
+    confidence: "medium",
+    verificationStatus: "patient_reported",
+  },
+  {
+    id: "tl-2018",
+    eventDate: "2018-06-12",
+    approximateDate: false,
+    eventType: "diagnosis",
+    title: "Crohn's disease diagnosed",
+    description:
+      "Ileocolonic Crohn's disease confirmed following clinical assessment and investigations.",
+    sourceType: "specialist_letter",
+    sourceId: "doc-gastro-summary",
+    confidence: "high",
+    verificationStatus: "verified",
+  },
+  {
+    id: "tl-2019",
+    eventDate: "2019-04-03",
+    approximateDate: false,
+    eventType: "medication_start",
+    title: "Azathioprine started",
+    description: "Immunomodulator therapy initiated for disease control.",
+    sourceType: "medication_history",
+    sourceId: "doc-nhs-meds",
+    confidence: "high",
+    verificationStatus: "verified",
+  },
+  {
+    id: "tl-2020",
+    eventDate: "2020-11-20",
+    approximateDate: false,
+    eventType: "medication_stop",
+    title: "Azathioprine discontinued",
+    description:
+      "Stopped due to persistent nausea and elevated liver enzymes.",
+    sourceType: "specialist_letter",
+    sourceId: "doc-gastro-summary",
+    confidence: "high",
+    verificationStatus: "verified",
+  },
+  {
+    id: "tl-2021",
+    eventDate: "2021-02-08",
+    approximateDate: false,
+    eventType: "medication_start",
+    title: "Adalimumab started",
+    description:
+      "Biologic therapy commenced at 40 mg every two weeks. Good clinical response.",
+    sourceType: "prescription",
+    sourceId: "doc-prescription",
+    confidence: "high",
+    verificationStatus: "verified",
+  },
+  {
+    id: "tl-2024",
+    eventDate: "2024-09-10",
+    approximateDate: false,
+    eventType: "procedure",
+    title: "Disease stable on colonoscopy",
+    description:
+      "Mild ileal inflammation only; no strictures. Continued biologic therapy recommended.",
+    sourceType: "colonoscopy",
+    sourceId: "doc-colonoscopy",
+    confidence: "high",
+    verificationStatus: "verified",
+  },
+  {
+    id: "tl-2026",
+    eventDate: "2026-07-01",
+    approximateDate: true,
+    eventType: "transition",
+    title: "International care transition initiated",
+    description:
+      "Maria engaged Transit to prepare healthcare continuity for the move from London to Barcelona.",
+    sourceType: "patient_reported",
+    confidence: "high",
+    verificationStatus: "patient_reported",
+  },
+];
