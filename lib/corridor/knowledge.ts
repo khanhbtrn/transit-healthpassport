@@ -83,6 +83,14 @@ function unique(items: string[]) {
   return Array.from(new Set(items.filter(Boolean)));
 }
 
+function shorten(text: string, max = 120) {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max - 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > 60 ? cut.slice(0, lastSpace) : cut).trim()}…`;
+}
+
 function composeFromCountries(
   from: CountryHealthProfile | null,
   to: CountryHealthProfile | null,
@@ -136,44 +144,32 @@ function composeFromCountries(
     };
   }
 
-  const summaryParts = [
+  const summary = [
     `${fromLabel} → ${toLabel}.`,
-    from
-      ? `Leaving: ${from.systemType}.`
-      : `Prepare as if ${fromLabel} records will not be retrievable later.`,
-    to
-      ? `Arriving: ${to.accessModel}`
-      : `On arrival in ${toLabel}, confirm the real first access step before you need urgent care.`,
-  ];
+    condition ? `Focus: keep ${condition} continuous.` : "",
+    concern ? `Priority: ${concern}.` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-  if (condition) {
-    summaryParts.push(
-      `For ${condition}, prioritise documentation quality, a medication bridge plan, and whether ${toLabel} can realistically continue therapy locally.`
-    );
-  }
-
-  // Avoid duplicated "Before leaving X: Before leaving X"
-  // by keeping firstStep* sentences intact in mustKnow only.
-
+  // Short, actionable only — full system detail stays in other fields for the agent.
   const mustKnow = unique([
-    concern ? `Your stated priority: ${concern}.` : "",
+    from
+      ? `Before leaving ${from.name}: get a signed summary, recent results, and exact meds/doses (paper + photos).`
+      : `Before leaving: get a signed clinical summary and medication list.`,
+    to
+      ? `In ${to.name}: ${shorten(to.firstStepIn, 140)}`
+      : `On arrival: confirm the first clinic/registration step before you need care.`,
+    to
+      ? `Meds in ${to.name}: ${shorten(to.medicationReality, 120)}`
+      : "Plan medication supply through travel and the first destination appointment.",
+    from && to
+      ? `Records: prepare for ${to.languages[0] || "local language"}/English — ${shorten(from.recordsTip, 100)}`
+      : "Carry paper and digital copies of every key record.",
     condition
-      ? `Put ${condition} in writing: diagnosis, severity/stage, complications, recent key results, allergies, and exact meds/doses.`
+      ? `For ${condition}: write last dose / next due date and what must not stop.`
       : "",
-    from ? from.firstStepOut : "",
-    to ? to.firstStepIn : "",
-    ...(from?.practicalMustKnow.slice(0, 2) || []),
-    ...(to?.practicalMustKnow.slice(0, 3) || []),
-    from?.medicationReality
-      ? `Origin medication reality (${from.name}): ${from.medicationReality}`
-      : "",
-    to?.medicationReality
-      ? `Destination medication reality (${to.name}): ${to.medicationReality}`
-      : "",
-    to?.specialistReality
-      ? `Specialty access in ${to.name}: ${to.specialistReality}`
-      : "",
-  ]).slice(0, 8);
+  ]).slice(0, 4);
 
   const languageNotes = unique([
     from
@@ -190,13 +186,13 @@ function composeFromCountries(
   ]);
 
   return {
-    summary: summaryParts.join(" "),
+    summary,
     mustKnow:
       mustKnow.length > 0
         ? mustKnow
         : [
-            `Prepare a signed clinical summary before leaving ${fromLabel}.`,
-            `Confirm the first access step in ${toLabel}.`,
+            `Before leaving: get a signed clinical summary and medication list.`,
+            `On arrival in ${toLabel}: confirm the first clinic/registration step.`,
           ],
     registrationNotes: to?.firstStepIn
       ? `${to.firstStepIn}${

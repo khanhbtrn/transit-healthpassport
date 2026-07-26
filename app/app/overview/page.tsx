@@ -117,33 +117,22 @@ export default function OverviewPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="surface-elevated rounded-[1.75rem] p-6"
+          className="surface-elevated rounded-[1.75rem] p-5"
         >
           <p className="text-xs tracking-[0.14em] text-accent uppercase">
             For your route
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
             {corridorBrief.routeLabel}
-            {corridorBrief.fromCountryId && corridorBrief.toCountryId
-              ? " · system-matched"
-              : ""}
           </p>
-          <p className="mt-3 text-[15px] leading-relaxed">
-            {corridorBrief.summary}
-          </p>
-          <ul className="mt-5 space-y-3 text-sm leading-relaxed text-muted-foreground">
-            {corridorBrief.mustKnow.slice(0, 6).map((item) => (
+          <ul className="mt-4 space-y-2.5 text-sm leading-snug">
+            {corridorBrief.mustKnow.slice(0, 4).map((item) => (
               <li key={item} className="flex gap-3">
-                <span className="mt-2 h-px w-4 shrink-0 bg-accent/50" />
+                <span className="mt-2 h-px w-3 shrink-0 bg-accent/50" />
                 <span>{item}</span>
               </li>
             ))}
           </ul>
-          {corridorBrief.careSystemNotes ? (
-            <p className="mt-5 border-t border-border pt-4 text-sm leading-relaxed text-muted-foreground">
-              {corridorBrief.careSystemNotes}
-            </p>
-          ) : null}
         </motion.section>
       ) : null}
 
