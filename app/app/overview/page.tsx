@@ -97,9 +97,16 @@ export default function OverviewPage() {
     hasHistory,
     transitionReady,
     destinationLabel,
+    destinationCountry: profile.destinationCountry,
+    destinationCity: profile.destinationCity,
     pendingApprovals,
     openNeeds,
   });
+
+  const ukBound =
+    /united kingdom|\buk\b|england|london/i.test(
+      `${profile.destinationCountry} ${profile.destinationCity}`
+    );
 
   const primary = actions.find((a) => a.primary) || actions[0];
   const secondary = actions.filter((a) => a !== primary);
@@ -134,8 +141,9 @@ export default function OverviewPage() {
                 {firstName}
               </h1>
               <p className="mt-2 max-w-lg text-sm text-muted-foreground">
-                Your care corridor is being prepared so you can show up ready.
-                TransitH gathers what clinics need; you approve every send.
+                {ukBound
+                  ? "UK path is GP first: get one English letter, confirm your borough/postcode, then register with a GP. Hospital specialty usually comes after referral — TransitH drafts the pack; you approve every step."
+                  : "Your care corridor is being prepared so you can show up ready. TransitH gathers what clinics need; you approve every send."}
               </p>
             </div>
             <EntryStamp
@@ -170,7 +178,7 @@ export default function OverviewPage() {
               className="pointer-events-none absolute -right-8 -top-10 h-36 w-36 rounded-full bg-[var(--brass)]/10 blur-3xl"
             />
             <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--brass)]">
-              Next endorsement
+              Next step
             </p>
             <h2 className="mt-2 max-w-lg break-words font-display text-2xl font-semibold tracking-tight sm:text-3xl">
               {primary.title}
@@ -194,14 +202,6 @@ export default function OverviewPage() {
         </Reveal>
       ) : null}
 
-      <NeedsPanel needs={agentNeeds} onResolve={resolveAgentNeed} />
-
-      {approvals.length > 0 ? (
-        <ApprovalQueue items={approvals} onStatus={setApprovalStatus} />
-      ) : null}
-
-      {agentDone.length > 0 ? <DoneLog items={agentDone} /> : null}
-
       {corridorBrief ? (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -219,6 +219,14 @@ export default function OverviewPage() {
           />
         </motion.div>
       ) : null}
+
+      <NeedsPanel needs={agentNeeds} onResolve={resolveAgentNeed} />
+
+      {approvals.length > 0 ? (
+        <ApprovalQueue items={approvals} onStatus={setApprovalStatus} />
+      ) : null}
+
+      {agentDone.length > 0 ? <DoneLog items={agentDone} /> : null}
 
       {secondary.length ? (
         <section className="grid gap-3 sm:grid-cols-2">

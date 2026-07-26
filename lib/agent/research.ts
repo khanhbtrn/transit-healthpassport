@@ -133,15 +133,21 @@ export function buildResearchPack(input: {
     "hba1c",
   ]);
 
-  // 1) Only ask to listen if we have zero clinical signal
+  // 1) Prefer uploading a letter; listen is optional (most users aren't at clinic)
   if (!conversationCompleted && !hasClinicalPack && documents.length === 0) {
     needs.push({
       id: "need-source",
-      kind: "talk_to_person",
-      title: "Capture your current clinic visit or upload one letter",
-      detail: `TransitH needs a source of truth from ${originCity} (listen now, or upload a signed summary). Without it, destination clinics will ask you to start over.`,
+      kind: "upload_doc",
+      title:
+        pathway === "nhs_gp_first"
+          ? `Get one English clinic letter from ${originCity}`
+          : `Upload one clinical summary from ${originCity}`,
+      detail:
+        pathway === "nhs_gp_first"
+          ? "Ask your current clinic for a short English letter (diagnosis, meds, recent results). Upload it here. Listening during a visit is optional if you’re already at the appointment."
+          : `TransitH needs a source of truth from ${originCity}. Upload a signed summary, or optionally listen during a visit.`,
       status: "open",
-      href: "/app/conversation",
+      href: "/app/documents",
       priority: "critical",
     });
   } else if (!hasClinicalPack) {
@@ -161,16 +167,17 @@ export function buildResearchPack(input: {
 
   // 2) Pathway-specific blocker only
   if (pathway === "nhs_gp_first") {
-    const addressKnown = Boolean(
-      profile.carePreferences?.notes?.toLowerCase().includes("address") ||
-        profile.destinationCity
-    );
+    const area = (profile.destinationArea || "").trim();
+    // City alone ("London") is not enough — Find a GP needs borough/postcode.
+    const addressKnown =
+      area.length >= 2 &&
+      !/^(london|uk|united kingdom|england)$/i.test(area);
     needs.push({
       id: "need-uk-address",
       kind: "confirm_info",
       title: "Confirm your UK area for GP registration",
       detail:
-        "NHS Find a GP needs a local address/postcode area. Tell TransitH your borough/city area so it can prepare the right registration pack — not a random London hospital cold-call.",
+        "NHS Find a GP needs a borough or postcode (e.g. Camden, NW1) — not just “London”. Add it in Profile. If you don’t have an address yet, write “after arrival” so the pack stays honest.",
       status: addressKnown ? "done" : "open",
       href: "/app/profile",
       priority: "critical",

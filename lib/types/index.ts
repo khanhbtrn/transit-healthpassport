@@ -81,6 +81,8 @@ export interface Profile {
   destinationCountry: string;
   currentCity: string;
   destinationCity: string;
+  /** Borough / postcode area for GP registration (e.g. Camden, NW1). */
+  destinationArea: string;
   moveDate: string;
   preferredLanguage: string;
   destinationDoctorLanguage: string;

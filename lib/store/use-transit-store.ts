@@ -27,6 +27,7 @@ import type {
   Handoff,
   MedicalDocument,
   Medication,
+  Profile,
   RelocationTask,
   TaskStatus,
   TimelineEvent,
@@ -34,6 +35,7 @@ import type {
 
 interface TransitStore extends TransitState {
   startJourney: (input: OnboardingInput) => void;
+  updateProfile: (patch: Partial<Profile>) => void;
   seedAlessiaJourney: () => void;
   seedMariaJourney: () => void;
   resetJourney: () => void;
@@ -100,6 +102,19 @@ export const useTransitStore = create<TransitStore>()(
       startJourney: (input) => {
         const seed = createJourneyFromOnboarding(input);
         set({ ...seed, ...withReadiness(seed) });
+      },
+
+      updateProfile: (patch) => {
+        const profile = {
+          ...get().profile,
+          ...patch,
+          carePreferences: {
+            ...get().profile.carePreferences,
+            ...(patch.carePreferences || {}),
+          },
+        };
+        set({ profile });
+        get().refreshAgentNeeds();
       },
 
       seedAlessiaJourney: () => {
@@ -430,6 +445,10 @@ export const useTransitStore = create<TransitStore>()(
             heightCm: p.profile?.heightCm ?? "",
             weightKg: p.profile?.weightKg ?? "",
             sex: p.profile?.sex ?? "",
+            destinationArea:
+              p.profile?.destinationArea ??
+              current.profile.destinationArea ??
+              "",
             reasonForMove: p.profile?.reasonForMove ?? "",
             journeyIntent:
               p.profile?.journeyIntent ?? current.profile.journeyIntent,

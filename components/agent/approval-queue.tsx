@@ -26,8 +26,12 @@ export function ApprovalQueue({
       <div>
         <p className="text-sm text-muted-foreground">Needs your approval</p>
         <h2 className="mt-1 font-display text-2xl tracking-tight">
-          Nothing leaves TransitH until you say so
+          Approve drafts — not real clinic registration
         </h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Approving keeps a clean pack you can copy or hand to a clinic. It does
+          not register you with the NHS or send email for real.
+        </p>
       </div>
 
       {pending.length === 0 ? (
@@ -64,7 +68,7 @@ export function ApprovalQueue({
               ) : null}
               <div className="mt-3 flex flex-wrap gap-2">
                 <Button size="sm" onClick={() => onStatus(item.id, "approved")}>
-                  Approve
+                  Approve draft
                 </Button>
                 {(item.kind === "appointment_request" ||
                   item.kind === "clinic_application" ||
@@ -74,7 +78,7 @@ export function ApprovalQueue({
                     variant="secondary"
                     onClick={() => onStatus(item.id, "simulated_sent")}
                   >
-                    Approve + simulate send
+                    Mark as sent (demo)
                   </Button>
                 )}
                 <Button

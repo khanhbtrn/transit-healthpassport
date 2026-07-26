@@ -54,8 +54,16 @@ export default function ArrivalPage() {
     transitionComplete ||
     Boolean(selectedDoctorId && hasHandoff && appointmentRequest);
 
-  const translated =
-    handoff.spanishSummary || handoff.catalanSummary || "";
+  const ukBound = /united kingdom|\buk\b|england|london/i.test(
+    `${profile.destinationCountry} ${profile.destinationCity}`
+  );
+  // Only show destination-language summaries when they match the corridor.
+  const wantsEsCa = /spain|españa|barcelona|catalan|catalunya/i.test(
+    `${profile.destinationCountry} ${profile.destinationCity}`
+  );
+  const translated = wantsEsCa
+    ? handoff.spanishSummary || handoff.catalanSummary || ""
+    : "";
 
   const letterBody =
     view === "plain"
@@ -101,7 +109,9 @@ export default function ArrivalPage() {
         : "",
       `Corridor: ${origin} → ${destination}`,
       doctor
-        ? `Suggested receiving clinician: ${doctor.doctorName}, ${doctor.organization}`
+        ? ukBound
+          ? `First NHS step (not a hospital booking): ${doctor.doctorName}, ${doctor.organization}`
+          : `Suggested receiving clinician: ${doctor.doctorName}, ${doctor.organization}`
         : "",
       "",
       letterBody,
@@ -150,12 +160,12 @@ export default function ArrivalPage() {
           {origin} → {destination}
         </p>
         <h1 className="font-display text-3xl tracking-tight md:text-4xl">
-          Agent summary
+          {ukBound ? "Your NHS care pack" : "Agent summary"}
         </h1>
         <p className="text-muted-foreground">
-          What TransitH did for you, what still needs your approval, and the
-          clinic-ready letter. Nothing is sent outside this app until you
-          approve.
+          {ukBound
+            ? "Approve drafts, copy the pack for your GP, then register via NHS Find a GP. Approving here does not register you or book a hospital specialty."
+            : "What TransitH did for you, what still needs your approval, and the clinic-ready letter. Nothing is sent outside this app until you approve."}
         </p>
       </header>
 
@@ -219,7 +229,9 @@ export default function ArrivalPage() {
         {doctor ? (
           <section className="mt-6 space-y-1 border-b border-border pb-6">
             <p className="text-xs tracking-wide text-muted-foreground uppercase">
-              Suggested receiving clinician
+              {ukBound
+                ? "First step · GP registration (not hospital booking)"
+                : "Suggested receiving clinician"}
             </p>
             <p className="text-base">
               {doctor.doctorName}
@@ -234,8 +246,20 @@ export default function ArrivalPage() {
                 .join(" · ")}
             </p>
             <p className="mt-2 text-xs text-muted-foreground">
-              Planning suggestion only — not a confirmed booking.
+              {ukBound
+                ? "Use NHS Find a GP with your borough/postcode. Hospital specialists are usually after a GP referral — don’t cold-call trusts first."
+                : "Planning suggestion only — not a confirmed booking."}
             </p>
+            {ukBound ? (
+              <a
+                href="https://www.nhs.uk/service-search/find-a-gp"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-2 inline-block text-sm text-accent underline-offset-4 hover:underline"
+              >
+                Open official Find a GP →
+              </a>
+            ) : null}
           </section>
         ) : null}
 
@@ -315,14 +339,14 @@ export default function ArrivalPage() {
 
       <div className="flex flex-col gap-2 border-t border-border pt-6 sm:flex-row">
         <Button className="flex-1" onClick={copyPackage}>
-          Copy package
+          {ukBound ? "Copy pack for your GP" : "Copy package"}
         </Button>
         <Button
           variant="secondary"
           className="flex-1"
           onClick={markSimulatedSent}
         >
-          Simulate clinic send
+          Mark as sent (demo)
         </Button>
       </div>
       <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">

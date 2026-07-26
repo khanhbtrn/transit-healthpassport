@@ -18,6 +18,7 @@ export const mariaProfile: Profile = {
   destinationCountry: "Spain",
   currentCity: "London",
   destinationCity: "Barcelona",
+  destinationArea: "",
   moveDate: "2026-09-14",
   preferredLanguage: "English",
   destinationDoctorLanguage: "Spanish or Catalan",

@@ -15,6 +15,7 @@ export const alessiaProfile: Profile = {
   destinationCountry: "Thailand",
   currentCity: "Milan",
   destinationCity: "Bangkok",
+  destinationArea: "",
   moveDate: "2026-08-18",
   preferredLanguage: "English",
   destinationDoctorLanguage: "English",

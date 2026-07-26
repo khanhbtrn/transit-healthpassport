@@ -116,8 +116,9 @@ export function AppNav() {
           onClick={() => setMenuOpen(false)}
           emphasize={pendingApprovals > 0}
         >
-          Package
-          {pendingApprovals > 0 ? ` (${pendingApprovals})` : ""}
+          {pendingApprovals > 0
+            ? `Approvals (${pendingApprovals})`
+            : "Care pack"}
         </MenuLink>
       ) : null}
 

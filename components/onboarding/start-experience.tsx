@@ -310,6 +310,7 @@ export function StartExperience() {
         careLanguages: preferredLanguage,
         careNotes: conditions.trim(),
       });
+      // Land on Home with the real next step (agent / letter) — not a fake “meet agent” detour.
       router.push("/app/overview");
     } catch {
       setError("Something went wrong. Try again.");
@@ -555,7 +556,13 @@ export function StartExperience() {
             disabled={busy || parsing}
             onClick={() => void continueJourney()}
           >
-            {busy ? "Starting…" : "Meet my agent"}
+            {busy
+              ? "Opening…"
+              : /united kingdom|\buk\b|england|london/i.test(
+                    `${destinationCountry} ${destinationCity}`
+                  )
+                ? "Open my UK care plan"
+                : "Open my care plan"}
           </Button>
         </section>
         </Reveal>
