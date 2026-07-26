@@ -2,7 +2,10 @@
 
 **Your healthcare moves with you.**
 
-Transit is an AI healthcare relocation agent for people living with chronic illness who move between countries. This repository contains a polished, demo-ready prototype centred on Maria Santos’s London → Barcelona Crohn’s disease journey.
+Transit is an AI healthcare relocation agent for people who move between countries.
+
+<img width="1482" height="910" alt="image" src="https://github.com/user-attachments/assets/6fc30a37-d617-480b-9c65-069bc09ca384" />
+
 
 ## Quick start
 
