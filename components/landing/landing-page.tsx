@@ -25,7 +25,7 @@ const stamps = [
   },
   {
     code: "02",
-    title: "TransitH clears the path",
+    title: "Transit clears the path",
     text: "It knows how systems differ by country, gathers what clinics need, and drafts the handoff.",
   },
   {
@@ -70,10 +70,7 @@ export function LandingPage() {
               tone="brass"
               className={`h-6 w-6 shrink-0 sm:h-7 sm:w-7 ${reducedMotion ? "" : "brass-glow"}`}
             />
-            <BrandWordmark
-              className="truncate text-xl text-white sm:text-2xl md:text-3xl"
-              accentH
-            />
+            <BrandWordmark className="truncate text-xl text-white sm:text-2xl md:text-3xl" />
           </div>
           <motion.div
             whileHover={reducedMotion ? undefined : { scale: 1.04, y: -1 }}
@@ -171,11 +168,7 @@ export function LandingPage() {
                       delay: 0.08 + i * 0.05,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className={
-                      letter === "H" && i === brandLetters.length - 1
-                        ? "inline-block text-[var(--brass)]"
-                        : "inline-block"
-                    }
+                    className="inline-block"
                   >
                     {letter}
                   </motion.span>
@@ -253,7 +246,7 @@ export function LandingPage() {
 
         <MrzMarquee
           className="absolute inset-x-0 bottom-0 z-10"
-          text="P<TRANSITH<HEALTH<PASSPORT<<<CORRIDOR<CLEARANCE<<READY<TO<ARRIVE<<<"
+          text="P<TRANSIT<HEALTH<PASSPORT<<<CORRIDOR<CLEARANCE<<READY<TO<ARRIVE<<<"
         />
       </section>
 
@@ -281,7 +274,7 @@ export function LandingPage() {
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-5 sm:text-lg">
               Moving countries should not mean starting medicine from zero.
-              TransitH holds your route, understands both healthcare systems, and
+              Transit holds your route, understands both healthcare systems, and
               gets the receiving clinic what it needs so arrival is seamless.
             </p>
           </Reveal>
@@ -358,7 +351,7 @@ export function LandingPage() {
           <Reveal delay={0.08}>
             <p className="text-lg leading-relaxed text-muted-foreground">
               Chronic care, pregnancy, specialty follow-up, fragmented records:
-              TransitH is the quiet preparation layer so your first week abroad is
+              Transit is the quiet preparation layer so your first week abroad is
               treatment, not paperwork.
             </p>
           </Reveal>

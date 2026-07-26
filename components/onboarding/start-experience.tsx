@@ -402,7 +402,7 @@ export function StartExperience() {
             Your corridor entry
           </p>
           <p className="mt-3 max-w-md text-white/70">
-            Tell TransitH where you’re moving and what care must continue. It
+            Tell Transit where you’re moving and what care must continue. It
             prepares the rest so you can arrive ready.
           </p>
         </motion.div>

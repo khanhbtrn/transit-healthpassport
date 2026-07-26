@@ -156,7 +156,7 @@ export async function mockRelocation(input = ""): Promise<RelocationPlanResult> 
           .toISOString()
           .slice(0, 10),
         priority: "high",
-        owner: "TransitH",
+        owner: "Transit",
         status: "not_started",
         sourceStatus: "Corridor guidance",
         recommendedAction: "Prepare document",
@@ -172,7 +172,7 @@ export async function mockRelocation(input = ""): Promise<RelocationPlanResult> 
         owner: "You",
         status: "not_started",
         sourceStatus: "Requires confirmation",
-        recommendedAction: "Ask TransitH",
+        recommendedAction: "Ask Transit",
       },
       {
         phase: "first_week",
@@ -262,7 +262,7 @@ export async function mockAgent(
   return {
     answer: `I can help with your move to ${dest.toLabel} using your profile, documents, and corridor guidance.`,
     whyItMatters:
-      "TransitH customises next steps to your origin and destination — not a generic checklist.",
+      "Transit customises next steps to your origin and destination — not a generic checklist.",
     nextAction: "Ask what matters for your route, or what to do next.",
     sourceStatus: "Corridor-aware guidance",
     actions: [

@@ -143,7 +143,7 @@ export const mariaContinuityRisks: ContinuityRisk[] = [
     id: "risk-route",
     title: "Destination care route is not confirmed",
     description:
-      "Healthcare eligibility and registration pathway in Spain must be verified with official sources. TransitH does not determine legal eligibility.",
+      "Healthcare eligibility and registration pathway in Spain must be verified with official sources. Transit does not determine legal eligibility.",
     severity: "high",
     sourceStatus: "Verify with the relevant official provider",
   },

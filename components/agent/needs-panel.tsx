@@ -23,7 +23,7 @@ export function NeedsPanel({
       <div>
         <p className="text-sm text-muted-foreground">Needs from you</p>
         <h2 className="mt-1 font-display text-xl tracking-tight sm:text-2xl">
-          TransitH only asks for what it can’t do alone
+          Transit only asks for what it can’t do alone
         </h2>
       </div>
       <ul className="space-y-2">

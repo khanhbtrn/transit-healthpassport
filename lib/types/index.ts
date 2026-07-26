@@ -57,7 +57,7 @@ export type JourneyStepId =
   | "clinical_handoff"
   | "arrival_readiness";
 
-/** Why the user opened TransitH — drives Home workflow. */
+/** Why the user opened Transit — drives Home workflow. */
 export type JourneyIntent =
   | "second_look"
   | "set_up_care"
@@ -255,7 +255,7 @@ export interface AgentAction {
   href?: string;
 }
 
-/** Something TransitH needs from the patient before/while it works. */
+/** Something Transit needs from the patient before/while it works. */
 export type AgentNeedKind =
   | "upload_doc"
   | "talk_to_person"
@@ -274,7 +274,7 @@ export interface AgentNeed {
   priority: Priority;
 }
 
-/** Work TransitH drafted that the patient must approve before any real send. */
+/** Work Transit drafted that the patient must approve before any real send. */
 export type ApprovalKind =
   | "specialist_request"
   | "clinic_application"

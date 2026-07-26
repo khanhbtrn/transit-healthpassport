@@ -308,7 +308,7 @@ export default function RelocationPage() {
           explanation: line,
           status: "complete",
           priority: index < 2 ? "critical" : "high",
-          owner: "TransitH",
+          owner: "Transit",
           dueDate: profile.moveDate || "",
           sourceStatus: "Corridor + community research",
           actionType: "research_step",
@@ -343,7 +343,7 @@ export default function RelocationPage() {
                 explanation: task.explanation,
                 status: "complete",
                 priority: task.priority || "high",
-                owner: "TransitH",
+                owner: "Transit",
                 dueDate: task.deadline || profile.moveDate || "",
                 sourceStatus: "AI checklist (corridor-specific)",
                 actionType: "research_step",
@@ -556,7 +556,7 @@ export default function RelocationPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-3xl sm:text-4xl">Your TransitH agent</h1>
+        <h1 className="font-display text-3xl sm:text-4xl">Your Transit agent</h1>
         <p className="mt-2 text-muted-foreground">
           Assumes you know nothing about {destination} care. Researches the
           system, community tips, and real clinic pathways — then asks only for
@@ -569,7 +569,7 @@ export default function RelocationPage() {
       {!alreadyRan && steps.length === 0 ? (
         <div className="rounded-[2rem] border border-border bg-card p-6">
           <p className="text-sm text-muted-foreground">
-            One run. TransitH researches your corridor, scans community threads,
+            One run. Transit researches your corridor, scans community threads,
             matches researched organisations (e.g. NHS GP pathway / hospital
             international desks), asks for at most a few missing inputs, and
             queues only what needs your approval. Live calls stay simulated until
@@ -593,7 +593,7 @@ export default function RelocationPage() {
             onClick={() => void runTransit()}
           >
             <Sparkles className="h-4 w-4" />
-            Let TransitH handle this
+            Let Transit handle this
           </Button>
         </div>
       ) : null}
@@ -674,7 +674,7 @@ export default function RelocationPage() {
 
       {running ? (
         <p className="text-center text-sm text-muted-foreground">
-          TransitH is working… stay on this page.
+          Transit is working… stay on this page.
         </p>
       ) : null}
     </div>

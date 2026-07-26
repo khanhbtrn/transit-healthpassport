@@ -43,7 +43,7 @@ export function getIntentHomeActions(input: {
         title: `${pendingApprovals} item${pendingApprovals === 1 ? "" : "s"} waiting for your OK`,
         description: uk
           ? "Approving drafts your GP registration pack and letters. It does not register you with the NHS — you still use Find a GP / submit yourself."
-          : "TransitH drafted booking and paperwork. Approve what can leave this app — nothing is sent for real until you say so.",
+          : "Transit drafted booking and paperwork. Approve what can leave this app — nothing is sent for real until you say so.",
         href: "/app/arrival",
         cta: "Review approvals",
         primary: true,
@@ -52,7 +52,7 @@ export function getIntentHomeActions(input: {
         title: "Ask a question",
         description: "What’s left on your route, or what’s still missing.",
         href: "/app/agent",
-        cta: "Ask TransitH",
+        cta: "Ask Transit",
       },
     ];
   }
@@ -65,7 +65,7 @@ export function getIntentHomeActions(input: {
           : "Your agent package is ready",
         description: uk
           ? "Copy the pack for your GP, approve what’s left, then register via NHS Find a GP — hospital specialty usually comes after."
-          : "See what TransitH prepared, what’s approved, and your clinic-ready letter.",
+          : "See what Transit prepared, what’s approved, and your clinic-ready letter.",
         href: "/app/arrival",
         cta: uk ? "Open GP pack" : "Open summary",
         primary: true,
@@ -79,7 +79,7 @@ export function getIntentHomeActions(input: {
         {
           title: "Run your UK care agent",
           description:
-            "TransitH will research NHS GP-first steps for " +
+            "Transit will research NHS GP-first steps for " +
             destinationLabel +
             ", ask only for what’s missing (usually one English letter + your postcode area), then draft a pack you approve.",
           href: "/app/relocation",
@@ -105,7 +105,7 @@ export function getIntentHomeActions(input: {
 
     return [
       {
-        title: `Let TransitH prepare ${destinationLabel}`,
+        title: `Let Transit prepare ${destinationLabel}`,
         description:
           "The agent lists exact docs it still needs, then drafts booking and paperwork for your approval.",
         href: "/app/relocation",
@@ -115,7 +115,7 @@ export function getIntentHomeActions(input: {
       {
         title: "Optional: capture a clinic visit",
         description:
-          "If you’re with your doctor now, TransitH can listen and extract facts. Otherwise upload a letter in Docs.",
+          "If you’re with your doctor now, Transit can listen and extract facts. Otherwise upload a letter in Docs.",
         href: "/app/conversation",
         cta: "Listen to visit",
       },
@@ -127,7 +127,7 @@ export function getIntentHomeActions(input: {
       {
         title: uk
           ? `Finish ${openNeeds} step${openNeeds === 1 ? "" : "s"} for NHS setup`
-          : `Finish ${openNeeds} item${openNeeds === 1 ? "" : "s"} TransitH asked for`,
+          : `Finish ${openNeeds} item${openNeeds === 1 ? "" : "s"} Transit asked for`,
         description: uk
           ? "Usually: confirm your borough/postcode, then run the agent for the GP pack."
           : "Uploads and quick confirmations only — the agent handles bureaucracy.",
@@ -152,7 +152,7 @@ export function getIntentHomeActions(input: {
     {
       title: uk
         ? `Handle NHS setup for ${destinationLabel}`
-        : `Let TransitH handle ${destinationLabel}`,
+        : `Let Transit handle ${destinationLabel}`,
       description: uk
         ? "Agent researches GP-first care, asks only for missing pieces, prepares your registration pack — you approve every draft."
         : "Agent researches the corridor, asks only for missing docs, prepares booking and handoff — you approve sends.",

@@ -138,12 +138,12 @@ export default function ArrivalPage() {
     return (
       <div className="mx-auto max-w-2xl space-y-6 py-4">
         <div>
-          <p className="text-sm text-muted-foreground">TransitH package</p>
+          <p className="text-sm text-muted-foreground">Transit package</p>
           <h1 className="mt-2 font-display text-3xl md:text-4xl">
             Not ready yet
           </h1>
           <p className="mt-3 text-muted-foreground">
-            Run TransitH once to prepare the letter for your receiving clinic.
+            Run Transit once to prepare the letter for your receiving clinic.
           </p>
         </div>
         <Button asChild size="lg">
@@ -165,7 +165,7 @@ export default function ArrivalPage() {
         <p className="text-muted-foreground">
           {ukBound
             ? "Approve drafts, copy the pack for your GP, then register via NHS Find a GP. Approving here does not register you or book a hospital specialty."
-            : "What TransitH did for you, what still needs your approval, and the clinic-ready letter. Nothing is sent outside this app until you approve."}
+            : "What Transit did for you, what still needs your approval, and the clinic-ready letter. Nothing is sent outside this app until you approve."}
         </p>
       </header>
 
@@ -199,7 +199,7 @@ export default function ArrivalPage() {
 
       <article className="surface-elevated px-6 py-8 sm:px-10 sm:py-10">
         <p className="text-xs tracking-[0.14em] text-muted-foreground uppercase">
-          TransitH · confidential draft
+          Transit · confidential draft
         </p>
 
         <div className="mt-6 space-y-1 border-b border-border pb-6">

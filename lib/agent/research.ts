@@ -145,7 +145,7 @@ export function buildResearchPack(input: {
       detail:
         pathway === "nhs_gp_first"
           ? "Ask your current clinic for a short English letter (diagnosis, meds, recent results). Upload it here. Listening during a visit is optional if you’re already at the appointment."
-          : `TransitH needs a source of truth from ${originCity}. Upload a signed summary, or optionally listen during a visit.`,
+          : `Transit needs a source of truth from ${originCity}. Upload a signed summary, or optionally listen during a visit.`,
       status: "open",
       href: "/app/documents",
       priority: "critical",
@@ -256,7 +256,7 @@ export function buildResearchApprovals(input: {
       kind: "specialist_request",
       title: "Approve ask to your current clinic for an English summary",
       summary:
-        "Only if you still need a transfer letter — TransitH drafted a short, specific request.",
+        "Only if you still need a transfer letter — Transit drafted a short, specific request.",
       detail: input.specialistDraft,
       status: "needs_approval",
       createdAt: now,

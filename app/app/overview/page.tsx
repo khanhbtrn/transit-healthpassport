@@ -142,8 +142,8 @@ export default function OverviewPage() {
               </h1>
               <p className="mt-2 max-w-lg text-sm text-muted-foreground">
                 {ukBound
-                  ? "UK path is GP first: get one English letter, confirm your borough/postcode, then register with a GP. Hospital specialty usually comes after referral — TransitH drafts the pack; you approve every step."
-                  : "Your care corridor is being prepared so you can show up ready. TransitH gathers what clinics need; you approve every send."}
+                  ? "UK path is GP first: get one English letter, confirm your borough/postcode, then register with a GP. Hospital specialty usually comes after referral — Transit drafts the pack; you approve every step."
+                  : "Your care corridor is being prepared so you can show up ready. Transit gathers what clinics need; you approve every send."}
               </p>
             </div>
             <EntryStamp

@@ -15,9 +15,9 @@ const body = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "TransitH · Health passport for care across borders",
+  title: "Transit · Health passport for care across borders",
   description:
-    "TransitH is your health passport when you move countries: corridor-aware care continuity, clinic-ready records, and handoffs prepared before you land.",
+    "Transit is your health passport when you move countries: corridor-aware care continuity, clinic-ready records, and handoffs prepared before you land.",
 };
 
 export default function RootLayout({

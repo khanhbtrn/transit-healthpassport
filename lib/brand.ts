@@ -1,4 +1,4 @@
-/** Product name. The H stands for healthcare. */
-export const BRAND = "TransitH";
+/** Product name. */
+export const BRAND = "Transit";
 
-export const BRAND_MRZ = "TRANSITH";
+export const BRAND_MRZ = "TRANSIT";
