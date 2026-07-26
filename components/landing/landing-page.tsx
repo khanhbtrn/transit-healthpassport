@@ -9,9 +9,11 @@ import {
 } from "framer-motion";
 import { EntryStamp } from "@/components/brand/entry-stamp";
 import { PassportMark } from "@/components/brand/passport-mark";
+import { BrandWordmark } from "@/components/brand/wordmark";
 import { MrzMarquee } from "@/components/motion/mrz-marquee";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
+import { BRAND } from "@/lib/brand";
 import { usePrefersReducedMotion } from "@/lib/hooks/use-prefers-reduced-motion";
 import { useTransitStore } from "@/lib/store/use-transit-store";
 
@@ -23,7 +25,7 @@ const stamps = [
   },
   {
     code: "02",
-    title: "Transit clears the path",
+    title: "TransitH clears the path",
     text: "It knows how systems differ by country, gathers what clinics need, and drafts the handoff.",
   },
   {
@@ -33,7 +35,7 @@ const stamps = [
   },
 ];
 
-const brandLetters = "Transit".split("");
+const brandLetters = BRAND.split("");
 
 export function LandingPage() {
   const onboarded = useTransitStore((s) => s.onboarded);
@@ -56,21 +58,22 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen text-foreground">
-      <header className="absolute inset-x-0 top-0 z-20 px-6 pt-7 md:px-10">
+      <header className="absolute inset-x-0 top-0 z-20 px-4 pt-5 sm:px-6 sm:pt-7 md:px-10">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mx-auto flex max-w-6xl items-center justify-between"
+          className="mx-auto flex max-w-6xl items-center justify-between gap-3"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
             <PassportMark
               tone="brass"
-              className={`h-7 w-7 ${reducedMotion ? "" : "brass-glow"}`}
+              className={`h-6 w-6 shrink-0 sm:h-7 sm:w-7 ${reducedMotion ? "" : "brass-glow"}`}
             />
-            <p className="font-display text-2xl font-bold tracking-tight text-white md:text-3xl">
-              Transit
-            </p>
+            <BrandWordmark
+              className="truncate text-xl text-white sm:text-2xl md:text-3xl"
+              accentH
+            />
           </div>
           <motion.div
             whileHover={reducedMotion ? undefined : { scale: 1.04, y: -1 }}
@@ -133,7 +136,7 @@ export function LandingPage() {
         ) : null}
 
         <motion.div
-          className="relative z-10 w-full px-6 pb-20 pt-32 md:px-10 md:pb-28"
+          className="relative z-10 w-full px-4 pb-20 pt-28 sm:px-6 sm:pt-32 md:px-10 md:pb-28"
           style={{
             y: reducedMotion ? 0 : contentY,
             opacity: reducedMotion ? 1 : contentOpacity,
@@ -141,19 +144,19 @@ export function LandingPage() {
         >
           <div className="mx-auto max-w-6xl">
             <motion.p
-              initial={{ opacity: 0, y: 12, letterSpacing: "0.5em" }}
-              animate={{ opacity: 1, y: 0, letterSpacing: "0.34em" }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className={`text-[11px] font-medium uppercase text-[var(--brass)] ${
+              className={`text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--brass)] sm:text-[11px] sm:tracking-[0.28em] ${
                 reducedMotion ? "" : "foil-shimmer"
               }`}
             >
               Health passport
             </motion.p>
 
-            <h1 className="mt-4 font-display text-[clamp(3.8rem,13vw,8.75rem)] font-extrabold leading-[0.88] tracking-[-0.05em] text-white">
-              <span className="sr-only">Transit</span>
-              <span aria-hidden className="inline-flex">
+            <h1 className="mt-3 max-w-full font-display text-[clamp(2.6rem,12vw,8.75rem)] font-extrabold leading-[0.9] tracking-[-0.05em] text-white sm:mt-4">
+              <span className="sr-only">{BRAND}</span>
+              <span aria-hidden className="inline-flex flex-wrap">
                 {brandLetters.map((letter, i) => (
                   <motion.span
                     key={`${letter}-${i}`}
@@ -168,7 +171,11 @@ export function LandingPage() {
                       delay: 0.08 + i * 0.05,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="inline-block"
+                    className={
+                      letter === "H" && i === brandLetters.length - 1
+                        ? "inline-block text-[var(--brass)]"
+                        : "inline-block"
+                    }
                   >
                     {letter}
                   </motion.span>
@@ -180,7 +187,7 @@ export function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.42 }}
-              className="mt-6 max-w-xl font-display text-2xl font-semibold leading-snug tracking-tight text-white/95 md:text-3xl"
+              className="mt-5 max-w-xl font-display text-xl font-semibold leading-snug tracking-tight text-white/95 sm:mt-6 sm:text-2xl md:text-3xl"
             >
               Arrive with care already prepared.
             </motion.p>
@@ -188,7 +195,7 @@ export function LandingPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="mt-4 max-w-md text-base leading-relaxed text-white/70 md:text-lg"
+              className="mt-3 max-w-md text-[15px] leading-relaxed text-white/70 sm:mt-4 sm:text-base md:text-lg"
             >
               Like a visa for your healthcare: corridor knowledge, records, and
               clinic handoff ready before you land. You just show up.
@@ -197,7 +204,7 @@ export function LandingPage() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.58 }}
-              className="mt-9 flex flex-wrap items-center gap-4"
+              className="mt-8 flex flex-col items-stretch gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
             >
               <motion.div
                 whileHover={
@@ -222,12 +229,12 @@ export function LandingPage() {
                     ? undefined
                     : { duration: 2.8, repeat: Infinity, ease: "easeInOut" }
                 }
-                className="rounded-2xl"
+                className="w-full rounded-2xl sm:w-auto"
               >
                 <Button
                   asChild
                   size="lg"
-                  className="bg-[var(--brass)] text-[var(--cover)] hover:bg-[#d4b46d]"
+                  className="w-full bg-[var(--brass)] text-[var(--cover)] hover:bg-[#d4b46d] sm:w-auto"
                 >
                   <Link href={startHref}>{startLabel}</Link>
                 </Button>
@@ -235,7 +242,7 @@ export function LandingPage() {
               {!onboarded ? (
                 <Link
                   href="#endorsements"
-                  className="text-sm text-white/70 underline-offset-4 transition hover:text-white hover:underline"
+                  className="text-center text-sm text-white/70 underline-offset-4 transition hover:text-white hover:underline sm:text-left"
                 >
                   How clearance works
                 </Link>
@@ -246,16 +253,16 @@ export function LandingPage() {
 
         <MrzMarquee
           className="absolute inset-x-0 bottom-0 z-10"
-          text="P<TRANSIT<HEALTH<PASSPORT<<<CORRIDOR<CLEARANCE<<READY<TO<ARRIVE<<<"
+          text="P<TRANSITH<HEALTH<PASSPORT<<<CORRIDOR<CLEARANCE<<READY<TO<ARRIVE<<<"
         />
       </section>
 
-      <section className="border-b border-border bg-[var(--cover)] px-6 py-5 text-white md:px-10">
+      <section className="border-b border-border bg-[var(--cover)] px-4 py-5 text-white sm:px-6 md:px-10">
         <Stagger className="mx-auto flex max-w-5xl flex-col gap-3 text-sm text-white/65 sm:flex-row sm:items-center sm:justify-between">
           <StaggerItem>
             <p>Cross-border care, prepared like travel documents</p>
           </StaggerItem>
-          <StaggerItem className="flex flex-wrap gap-x-6 gap-y-1">
+          <StaggerItem className="flex flex-wrap gap-x-5 gap-y-1">
             <span>System-aware by country</span>
             <span>Clinic-ready pack</span>
             <span>You approve every send</span>
@@ -263,18 +270,18 @@ export function LandingPage() {
         </Stagger>
       </section>
 
-      <section className="border-b border-border px-6 py-20 md:px-10 md:py-28">
+      <section className="border-b border-border px-4 py-14 sm:px-6 sm:py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-3xl">
           <Reveal>
             <p className="text-sm uppercase tracking-[0.2em] text-[var(--brass)]">
               The idea
             </p>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
+            <h2 className="mt-3 font-display text-[1.75rem] font-bold tracking-tight sm:text-3xl md:text-5xl">
               A passport for continuity of care.
             </h2>
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-5 sm:text-lg">
               Moving countries should not mean starting medicine from zero.
-              Transit holds your route, understands both healthcare systems, and
+              TransitH holds your route, understands both healthcare systems, and
               gets the receiving clinic what it needs so arrival is seamless.
             </p>
           </Reveal>
@@ -283,14 +290,14 @@ export function LandingPage() {
 
       <section
         id="endorsements"
-        className="border-b border-border bg-card/50 px-6 py-20 md:px-10 md:py-28"
+        className="border-b border-border bg-card/50 px-4 py-14 sm:px-6 sm:py-20 md:px-10 md:py-28"
       >
         <div className="mx-auto max-w-3xl">
           <Reveal>
             <p className="text-sm uppercase tracking-[0.2em] text-[var(--brass)]">
               Endorsements
             </p>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+            <h2 className="mt-3 font-display text-[1.75rem] font-bold tracking-tight sm:text-3xl md:text-4xl">
               Three stamps to arrival.
             </h2>
           </Reveal>
@@ -338,27 +345,27 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="border-b border-border px-6 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-5xl gap-12 md:grid-cols-2 md:items-end md:gap-16">
+      <section className="border-b border-border px-4 py-14 sm:px-6 sm:py-20 md:px-10 md:py-28">
+        <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-2 md:items-end md:gap-16">
           <Reveal>
             <p className="text-sm uppercase tracking-[0.2em] text-[var(--brass)]">
               For whom
             </p>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
+            <h2 className="mt-3 font-display text-[1.75rem] font-bold tracking-tight sm:text-3xl md:text-4xl">
               People who need to land already in the system.
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
             <p className="text-lg leading-relaxed text-muted-foreground">
               Chronic care, pregnancy, specialty follow-up, fragmented records:
-              Transit is the quiet preparation layer so your first week abroad is
+              TransitH is the quiet preparation layer so your first week abroad is
               treatment, not paperwork.
             </p>
           </Reveal>
         </div>
       </section>
 
-      <section className="relative overflow-hidden px-6 py-24 md:px-10 md:py-32">
+      <section className="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-24 md:px-10 md:py-32">
         <motion.div
           aria-hidden
           className="absolute inset-0 bg-cover bg-center"
@@ -388,7 +395,7 @@ export function LandingPage() {
               className={`mx-auto h-10 w-10 ${reducedMotion ? "" : "brass-glow"}`}
             />
           </motion.div>
-          <p className="mt-5 font-display text-4xl font-bold tracking-tight text-white md:text-5xl">
+          <p className="mt-5 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
             Ready for entry.
           </p>
           <p className="mx-auto mt-4 max-w-md text-white/70">
@@ -411,12 +418,10 @@ export function LandingPage() {
         </Reveal>
       </section>
 
-      <footer className="flex flex-col gap-2 px-6 py-8 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between md:px-10">
+      <footer className="flex flex-col gap-2 px-4 py-8 text-sm text-muted-foreground sm:px-6 md:flex-row md:items-center md:justify-between md:px-10">
         <div className="flex items-center gap-2">
           <PassportMark tone="ink" className="h-5 w-5" />
-          <p className="font-display text-base font-semibold text-foreground">
-            Transit
-          </p>
+          <BrandWordmark className="text-base text-foreground" as="p" />
         </div>
         <p>Your healthcare passport across borders.</p>
       </footer>

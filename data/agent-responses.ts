@@ -28,7 +28,7 @@ export const scriptedAgentResponses: ScriptedAgentResponse[] = [
     whyItMatters:
       "Your destination clinic may need confirmation of your diagnosis, previous treatment, and current biologic regimen before assuming care.",
     nextAction:
-      "I can prepare a request to Dr. Reed for your approval. Transit will not contact anyone without your permission.",
+      "I can prepare a request to Dr. Reed for your approval. TransitH will not contact anyone without your permission.",
     sourceStatus: "Based on relocation plan and continuity risk analysis",
     actions: [
       { id: "a1", label: "Prepare request", type: "prepare_request", href: "/app/relocation" },
@@ -95,7 +95,7 @@ export const scriptedAgentResponses: ScriptedAgentResponse[] = [
   {
     match: /jargon|simple|without medical|plain/i,
     answer:
-      "You are moving from London to Barcelona with Crohn's disease that is currently stable. Transit has gathered your records, prepared a Spain-focused checklist, suggested a specialist, and drafted a handoff so your care can continue with less interruption.",
+      "You are moving from London to Barcelona with Crohn's disease that is currently stable. TransitH has gathered your records, prepared a Spain-focused checklist, suggested a specialist, and drafted a handoff so your care can continue with less interruption.",
     whyItMatters:
       "The hard part of moving with a chronic condition is not only paperwork — it is keeping treatment continuous.",
     nextAction:
@@ -141,7 +141,7 @@ export const defaultAgentResponse: ScriptedAgentResponse = {
   answer:
     "I can help with Maria's care transition using her stored profile, documents, relocation plan, and handoff.",
   whyItMatters:
-    "Transit organises information and prepares actions — it does not replace a qualified clinician or make medical decisions.",
+    "TransitH organises information and prepares actions — it does not replace a qualified clinician or make medical decisions.",
   nextAction:
     "Try one of the suggested questions, or ask about urgency, missing information, doctors, or travel documents.",
   sourceStatus: "General guidance from Maria's demo context",

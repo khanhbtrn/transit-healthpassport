@@ -79,15 +79,15 @@ export function RouteBriefCard({
   }, [fromCountry, toCountry, fromCity, toCity, condition]);
 
   return (
-    <section className="surface-elevated relative overflow-hidden rounded-[1.75rem] p-5">
+    <section className="surface-elevated relative overflow-hidden rounded-[1.35rem] p-4 sm:rounded-[1.75rem] sm:p-5">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(ellipse_at_top,rgba(15,111,104,0.12),transparent_70%)]"
       />
-      <p className="relative text-xs tracking-[0.14em] text-accent uppercase">
+      <p className="relative text-[11px] tracking-[0.14em] text-accent uppercase sm:text-xs">
         How care works on your route
       </p>
-      <p className="relative mt-1 font-display text-lg font-semibold tracking-tight">
+      <p className="relative mt-1 break-words font-display text-base font-semibold tracking-tight sm:text-lg">
         {brief.routeLabel}
       </p>
 

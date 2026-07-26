@@ -157,7 +157,7 @@ export default function DocumentsPage() {
       <div>
         <h1 className="font-display text-4xl">My documents</h1>
         <p className="mt-2 text-muted-foreground">
-          Throw everything in. Transit organises it.
+          Throw everything in. TransitH organises it.
         </p>
       </div>
 

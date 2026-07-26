@@ -10,7 +10,7 @@ export type ClinicDirectoryEntry = {
   countryId: string;
   careRoute: string;
   languages: string[];
-  /** How Transit researched this entry */
+  /** How TransitH researched this entry */
   researchBasis: string;
   /** Official or public directory URL */
   directoryUrl: string;

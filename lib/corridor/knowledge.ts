@@ -137,7 +137,7 @@ const corridorOverrides: Record<string, Playbook> = {
       "Identify the UK specialty early (e.g. gastroenterology, oncology). Prepare a referral-style handoff your GP or private clinic can use immediately.",
     officialReminders: [
       "Confirm NHS registration/entitlement on official NHS / GOV.UK sources.",
-      "Transit prepares guidance — it does not determine eligibility.",
+      "TransitH prepares guidance — it does not determine eligibility.",
     ],
   },
   "uk->spain": {
@@ -164,7 +164,7 @@ const corridorOverrides: Record<string, Playbook> = {
       "Shortlist a destination specialist/clinic and send the UK letter ahead when possible.",
     officialReminders: [
       "Verify Spanish eligibility/registration with official authorities.",
-      "Transit does not determine legal eligibility.",
+      "TransitH does not determine legal eligibility.",
     ],
   },
   "vietnam->russia": {
@@ -310,7 +310,7 @@ function composeFromCountries(
       specialistNotes: `Identify the right specialty pathway in ${input.destinationCity || toLabel}.`,
       officialReminders: [
         "Verify destination healthcare requirements with official sources.",
-        "Transit organises route-specific guidance — it does not replace clinicians or determine eligibility.",
+        "TransitH organises route-specific guidance — it does not replace clinicians or determine eligibility.",
       ],
     };
   }
@@ -458,7 +458,7 @@ function composeFromCountries(
     officialReminders: unique([
       from?.officialHint || "",
       to?.officialHint || "",
-      "Transit provides corridor-specific guidance from healthcare-system knowledge — always confirm with the clinic and official sources for your status.",
+      "TransitH provides corridor-specific guidance from healthcare-system knowledge — always confirm with the clinic and official sources for your status.",
     ]),
   };
 }

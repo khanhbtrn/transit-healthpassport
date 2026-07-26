@@ -26,7 +26,7 @@ export function ApprovalQueue({
       <div>
         <p className="text-sm text-muted-foreground">Needs your approval</p>
         <h2 className="mt-1 font-display text-2xl tracking-tight">
-          Nothing leaves Transit until you say so
+          Nothing leaves TransitH until you say so
         </h2>
       </div>
 

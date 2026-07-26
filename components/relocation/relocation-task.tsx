@@ -10,7 +10,7 @@ const actionLabels: Record<string, string> = {
   upload_proof: "Upload proof",
   review_instructions: "Review instructions",
   mark_complete: "Mark complete",
-  ask_transit: "Ask Transit",
+  ask_transit: "Ask TransitH",
   prepare_document: "Prepare document",
   approve_action: "Approve action",
 };

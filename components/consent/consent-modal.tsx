@@ -42,12 +42,12 @@ export function ConsentModal({
               id="consent"
             />
             <span>
-              I understand Transit listens only with permission, and extracted
+              I understand TransitH listens only with permission, and extracted
               medical facts will not be saved until I review and approve them.
             </span>
           </label>
           <p className="text-xs text-muted-foreground">
-            Transit organises information and prepares actions. It does not
+            TransitH organises information and prepares actions. It does not
             replace qualified medical professionals.
           </p>
           <Button disabled={!checked} onClick={onConfirm} className="w-full">

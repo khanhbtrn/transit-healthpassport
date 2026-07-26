@@ -139,7 +139,7 @@ export function buildResearchPack(input: {
       id: "need-source",
       kind: "talk_to_person",
       title: "Capture your current clinic visit or upload one letter",
-      detail: `Transit needs a source of truth from ${originCity} (listen now, or upload a signed summary). Without it, destination clinics will ask you to start over.`,
+      detail: `TransitH needs a source of truth from ${originCity} (listen now, or upload a signed summary). Without it, destination clinics will ask you to start over.`,
       status: "open",
       href: "/app/conversation",
       priority: "critical",
@@ -170,7 +170,7 @@ export function buildResearchPack(input: {
       kind: "confirm_info",
       title: "Confirm your UK area for GP registration",
       detail:
-        "NHS Find a GP needs a local address/postcode area. Tell Transit your borough/city area so it can prepare the right registration pack — not a random London hospital cold-call.",
+        "NHS Find a GP needs a local address/postcode area. Tell TransitH your borough/city area so it can prepare the right registration pack — not a random London hospital cold-call.",
       status: addressKnown ? "done" : "open",
       href: "/app/profile",
       priority: "critical",
@@ -249,7 +249,7 @@ export function buildResearchApprovals(input: {
       kind: "specialist_request",
       title: "Approve ask to your current clinic for an English summary",
       summary:
-        "Only if you still need a transfer letter — Transit drafted a short, specific request.",
+        "Only if you still need a transfer letter — TransitH drafted a short, specific request.",
       detail: input.specialistDraft,
       status: "needs_approval",
       createdAt: now,

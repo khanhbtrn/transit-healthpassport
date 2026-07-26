@@ -8,9 +8,11 @@ import {
   Mic,
   Sparkles,
   ChevronDown,
+  User,
 } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { PassportMark } from "@/components/brand/passport-mark";
+import { BrandWordmark } from "@/components/brand/wordmark";
 import { CommandPalette } from "@/components/layout/command-palette";
 import { Progress } from "@/components/ui/progress";
 import { useTransitStore } from "@/lib/store/use-transit-store";
@@ -59,9 +61,9 @@ export function AppNav() {
   useEffect(() => {
     if (!menuOpen) return;
     function onPointerDown(event: MouseEvent) {
-      if (!menuRef.current?.contains(event.target as Node)) {
-        setMenuOpen(false);
-      }
+      const target = event.target as Element | null;
+      if (target?.closest?.("[data-you-menu]")) return;
+      setMenuOpen(false);
     }
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") setMenuOpen(false);
@@ -74,22 +76,85 @@ export function AppNav() {
     };
   }, [menuOpen]);
 
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
   function startOver() {
     localStorage.removeItem("transit-user-v3");
     localStorage.removeItem("transit-user-v2");
     window.location.href = "/";
   }
 
+  const youMenu = (
+    <>
+      {listenNeeded ? (
+        <MenuLink
+          href="/app/conversation"
+          pathname={pathname}
+          onClick={() => setMenuOpen(false)}
+          emphasize
+        >
+          <Mic className="h-3.5 w-3.5" />
+          Listen to visit
+        </MenuLink>
+      ) : (
+        <MenuLink
+          href="/app/conversation"
+          pathname={pathname}
+          onClick={() => setMenuOpen(false)}
+        >
+          <Mic className="h-3.5 w-3.5" />
+          Listen to visit
+        </MenuLink>
+      )}
+
+      {packageReady ? (
+        <MenuLink
+          href="/app/arrival"
+          pathname={pathname}
+          onClick={() => setMenuOpen(false)}
+          emphasize={pendingApprovals > 0}
+        >
+          Package
+          {pendingApprovals > 0 ? ` (${pendingApprovals})` : ""}
+        </MenuLink>
+      ) : null}
+
+      <MenuLink
+        href="/app/profile"
+        pathname={pathname}
+        onClick={() => setMenuOpen(false)}
+      >
+        Profile
+      </MenuLink>
+
+      <div className="my-1 border-t border-border/70" />
+
+      <button
+        type="button"
+        role="menuitem"
+        className="block w-full rounded-xl px-3 py-2.5 text-left text-sm text-muted-foreground hover:bg-muted/80"
+        onClick={startOver}
+      >
+        Start over
+      </button>
+    </>
+  );
+
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-white/50 bg-[rgba(238,242,246,0.86)] backdrop-blur-xl">
-        <div className="mx-auto flex h-14 max-w-3xl items-center gap-3 px-4 sm:h-16 sm:px-6">
+        <div className="mx-auto flex h-14 max-w-3xl items-center gap-2 px-3 sm:h-16 sm:gap-3 sm:px-6">
           <Link
             href="/app/overview"
-            className="inline-flex shrink-0 items-center gap-2 font-display text-xl font-bold tracking-tight transition hover:opacity-80 sm:text-2xl"
+            className="inline-flex min-w-0 shrink items-center gap-1.5 font-display text-lg font-bold tracking-tight transition hover:opacity-80 sm:gap-2 sm:text-2xl"
           >
-            <PassportMark tone="ink" className="h-5 w-5 text-[var(--brass)]" />
-            Transit
+            <PassportMark
+              tone="ink"
+              className="h-5 w-5 shrink-0 text-[var(--brass)]"
+            />
+            <BrandWordmark className="truncate text-lg sm:text-2xl" />
           </Link>
 
           <nav
@@ -117,17 +182,17 @@ export function AppNav() {
             })}
           </nav>
 
-          <div className="ml-auto flex items-center gap-2 sm:gap-3">
+          <div className="ml-auto flex min-w-0 items-center gap-1.5 sm:gap-3">
             <CommandPalette />
 
-            <div className="relative" ref={menuRef}>
+            <div className="relative hidden sm:block" ref={menuRef} data-you-menu>
               <button
                 type="button"
                 onClick={() => setMenuOpen((v) => !v)}
                 aria-expanded={menuOpen}
                 aria-haspopup="menu"
                 className={cn(
-                  "inline-flex max-w-[9.5rem] items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-left transition",
+                  "inline-flex max-w-[10rem] items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-left transition",
                   youActive || menuOpen
                     ? "bg-accent-soft text-accent"
                     : "hover:bg-white/70"
@@ -137,7 +202,7 @@ export function AppNav() {
                   <span className="block truncate text-sm font-semibold tracking-tight text-foreground">
                     {firstName}
                   </span>
-                  <span className="block text-[11px] text-muted-foreground">
+                  <span className="block truncate text-[11px] text-muted-foreground">
                     {readinessPercent}% clearance
                     {pendingApprovals > 0
                       ? ` · ${pendingApprovals} to approve`
@@ -157,72 +222,32 @@ export function AppNav() {
                   role="menu"
                   className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-white/60 bg-[rgba(247,250,252,0.96)] p-1.5 shadow-[var(--shadow-lift)] backdrop-blur-xl"
                 >
-                  {listenNeeded ? (
-                    <MenuLink
-                      href="/app/conversation"
-                      pathname={pathname}
-                      onClick={() => setMenuOpen(false)}
-                      emphasize
-                    >
-                      <Mic className="h-3.5 w-3.5" />
-                      Listen to visit
-                    </MenuLink>
-                  ) : (
-                    <MenuLink
-                      href="/app/conversation"
-                      pathname={pathname}
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      <Mic className="h-3.5 w-3.5" />
-                      Listen to visit
-                    </MenuLink>
-                  )}
-
-                  {packageReady ? (
-                    <MenuLink
-                      href="/app/arrival"
-                      pathname={pathname}
-                      onClick={() => setMenuOpen(false)}
-                      emphasize={pendingApprovals > 0}
-                    >
-                      Package
-                      {pendingApprovals > 0
-                        ? ` (${pendingApprovals})`
-                        : ""}
-                    </MenuLink>
-                  ) : null}
-
-                  <MenuLink
-                    href="/app/profile"
-                    pathname={pathname}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Profile
-                  </MenuLink>
-
-                  <div className="my-1 border-t border-border/70" />
-
-                  <button
-                    type="button"
-                    role="menuitem"
-                    className="block w-full rounded-xl px-3 py-2.5 text-left text-sm text-muted-foreground hover:bg-muted/80"
-                    onClick={startOver}
-                  >
-                    Start over
-                  </button>
+                  {youMenu}
                 </div>
               ) : null}
+            </div>
+
+            <div className="flex min-w-0 flex-col items-end sm:hidden">
+              <span className="max-w-[5.5rem] truncate text-xs font-semibold text-foreground">
+                {firstName}
+              </span>
+              <span className="text-[10px] text-muted-foreground">
+                {readinessPercent}%
+                {pendingApprovals > 0 ? ` · ${pendingApprovals}` : ""}
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="mx-auto max-w-3xl px-4 pb-2.5 sm:px-6">
+        <div className="mx-auto max-w-3xl px-3 pb-2.5 sm:px-6">
           <Progress value={readinessPercent} className="h-1" />
         </div>
       </header>
 
       <nav
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-white/55 bg-[rgba(247,250,252,0.92)] px-2 py-2 backdrop-blur-xl sm:hidden"
+        data-you-menu
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-white/55 bg-[rgba(247,250,252,0.94)] px-2 pt-2 backdrop-blur-xl sm:hidden"
+        style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}
         aria-label="Primary"
       >
         <div className="mx-auto grid max-w-lg grid-cols-4 gap-1">
@@ -234,7 +259,7 @@ export function AppNav() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center gap-1 rounded-2xl px-2 py-2.5 text-[11px] transition",
+                  "flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-2 text-[11px] transition",
                   active
                     ? "bg-accent-soft text-accent"
                     : "text-muted-foreground"
@@ -249,50 +274,19 @@ export function AppNav() {
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
             className={cn(
-              "flex flex-col items-center gap-1 rounded-2xl px-2 py-2.5 text-[11px] transition",
+              "flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-2 text-[11px] transition",
               youActive || menuOpen
                 ? "bg-accent-soft text-accent"
                 : "text-muted-foreground"
             )}
           >
-            <ChevronDown className="h-5 w-5" />
+            <User className="h-5 w-5" />
             You
           </button>
         </div>
         {menuOpen ? (
-          <div className="mx-auto mt-2 max-w-lg space-y-1 border-t border-border/70 pt-2">
-            <Link
-              href="/app/conversation"
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-2 rounded-xl bg-muted/80 px-3 py-2.5 text-sm"
-            >
-              <Mic className="h-4 w-4" />
-              Listen to visit
-            </Link>
-            {packageReady ? (
-              <Link
-                href="/app/arrival"
-                onClick={() => setMenuOpen(false)}
-                className="block rounded-xl bg-muted/80 px-3 py-2.5 text-sm"
-              >
-                Package
-                {pendingApprovals > 0 ? ` · ${pendingApprovals} to approve` : ""}
-              </Link>
-            ) : null}
-            <Link
-              href="/app/profile"
-              onClick={() => setMenuOpen(false)}
-              className="block rounded-xl bg-muted/80 px-3 py-2.5 text-sm"
-            >
-              Profile
-            </Link>
-            <button
-              type="button"
-              onClick={startOver}
-              className="block w-full rounded-xl px-3 py-2.5 text-left text-sm text-muted-foreground"
-            >
-              Start over
-            </button>
+          <div className="mx-auto mt-2 max-h-[45vh] max-w-lg space-y-1 overflow-y-auto border-t border-border/70 pt-2">
+            {youMenu}
           </div>
         ) : null}
       </nav>

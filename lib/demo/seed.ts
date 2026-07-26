@@ -78,11 +78,11 @@ export interface TransitState {
   completedTaskIds: string[];
   isDemo: boolean;
   corridorBrief: CorridorBrief | null;
-  /** True after the Transit agent run finishes preparing transfer artifacts. */
+  /** True after the TransitH agent run finishes preparing transfer artifacts. */
   transitionComplete: boolean;
   spokenHandoffUrl: string | null;
   specialistRequestDraft: string;
-  /** Inputs Transit still needs from the patient (docs, people, confirmations). */
+  /** Inputs TransitH still needs from the patient (docs, people, confirmations). */
   agentNeeds: AgentNeed[];
   /** Drafts awaiting patient approval before any real send. */
   approvals: ApprovalItem[];
@@ -395,7 +395,7 @@ export function createJourneyFromOnboarding(
       {
         id: "welcome",
         role: "assistant",
-        content: `Hi ${firstName}. I’m your Transit agent for ${corridorBrief.routeLabel}. I’ll ask only for the docs and people I need, then prepare booking and paperwork — you’ll approve anything before it leaves this app.`,
+        content: `Hi ${firstName}. I’m your TransitH agent for ${corridorBrief.routeLabel}. I’ll ask only for the docs and people I need, then prepare booking and paperwork — you’ll approve anything before it leaves this app.`,
         whyItMatters: corridorBrief.mustKnow[0],
         nextAction:
           "If you’re with your doctor now, tap Listen. Otherwise open Agent and let me run.",
@@ -479,7 +479,7 @@ export function createAlessiaSeed(): TransitState {
         id: "welcome-alessia",
         role: "assistant",
         content:
-          "Hi Alessia. I’m your Transit agent for Milan → Bangkok. You’re with your doctor now — I’ll ask only for the docs I still need, prepare the Bangkok international-desk booking and handoff, then show what you must approve.",
+          "Hi Alessia. I’m your TransitH agent for Milan → Bangkok. You’re with your doctor now — I’ll ask only for the docs I still need, prepare the Bangkok international-desk booking and handoff, then show what you must approve.",
         whyItMatters: corridorBrief.mustKnow[0],
         nextAction: "Tap Listen with your endocrinologist, or start the agent run.",
         sourceStatus: "Alessia demo journey",

@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Mic, MicOff } from "lucide-react";
 import { PassportMark } from "@/components/brand/passport-mark";
+import { BrandWordmark } from "@/components/brand/wordmark";
 import { Reveal } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -320,7 +321,7 @@ export function StartExperience() {
   if (onboarded) {
     return (
       <div className="min-h-screen">
-        <div className="relative overflow-hidden bg-[var(--cover)] px-6 py-16 md:px-10 md:py-20">
+        <div className="relative overflow-hidden bg-[var(--cover)] px-4 py-14 sm:px-6 sm:py-16 md:px-10 md:py-20">
           <div
             aria-hidden
             className="absolute inset-0 bg-cover bg-center opacity-70"
@@ -335,7 +336,7 @@ export function StartExperience() {
             <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[var(--brass)]">
               Passport open
             </p>
-            <p className="mt-3 font-display text-4xl font-bold text-white md:text-5xl">
+            <p className="mt-3 font-display text-3xl font-bold text-white sm:text-4xl md:text-5xl">
               Welcome back
             </p>
             <p className="mt-3 text-white/70">
@@ -369,7 +370,7 @@ export function StartExperience() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="relative overflow-hidden bg-[var(--cover)] px-6 pb-12 pt-10 md:px-10 md:pb-14 md:pt-14">
+      <div className="relative overflow-hidden bg-[var(--cover)] px-4 pb-12 pt-10 sm:px-6 md:px-10 md:pb-14 md:pt-14">
         <div
           aria-hidden
           className="absolute inset-0 bg-cover bg-center opacity-70"
@@ -391,22 +392,22 @@ export function StartExperience() {
             className="inline-flex items-center gap-2 text-sm font-medium text-white/75 underline-offset-4 hover:text-white hover:underline"
           >
             <PassportMark tone="brass" className="h-4 w-4" />
-            Transit
+            <BrandWordmark className="text-sm font-medium text-white" />
           </Link>
           <p className="mt-6 text-[11px] font-medium uppercase tracking-[0.28em] text-[var(--brass)]">
             Issue passport
           </p>
-          <p className="mt-3 font-display text-4xl font-bold tracking-tight text-white md:text-5xl">
+          <p className="mt-3 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
             Your corridor entry
           </p>
           <p className="mt-3 max-w-md text-white/70">
-            Tell Transit where you’re moving and what care must continue. It
+            Tell TransitH where you’re moving and what care must continue. It
             prepares the rest so you can arrive ready.
           </p>
         </motion.div>
       </div>
 
-      <div className="relative mx-auto w-full max-w-xl space-y-6 px-6 pb-16 md:px-10">
+      <div className="relative mx-auto w-full max-w-xl space-y-6 px-4 pb-16 sm:px-6 md:px-10">
         {speechSupported ? (
           <Reveal variant="passport">
             <section>

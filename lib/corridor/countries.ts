@@ -55,7 +55,7 @@ export const countryProfiles: CountryHealthProfile[] = [
       "If you use a Yangon/Mandalay private hospital, request a discharge/transfer-style summary, not only verbal advice.",
     ],
     officialHint:
-      "Treat local hospital/clinic instructions and your destination’s official entry/health rules as the source of truth — Transit cannot verify facility status day-to-day.",
+      "Treat local hospital/clinic instructions and your destination’s official entry/health rules as the source of truth — TransitH cannot verify facility status day-to-day.",
   },
   {
     id: "afghanistan",
@@ -182,7 +182,7 @@ export const countryProfiles: CountryHealthProfile[] = [
       "Verify NHS entitlement for your immigration/residence situation on official UK pages.",
     ],
     officialHint:
-      "Use official NHS / GOV.UK guidance for registration and entitlement — Transit does not decide eligibility.",
+      "Use official NHS / GOV.UK guidance for registration and entitlement — TransitH does not decide eligibility.",
   },
   {
     id: "spain",

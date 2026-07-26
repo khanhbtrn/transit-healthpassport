@@ -105,8 +105,8 @@ export function PlaceSearch({
   }
 
   return (
-    <div ref={rootRef} className="relative">
-      <div className="relative">
+    <div ref={rootRef} className="relative min-w-0">
+      <div className="relative min-w-0">
         <MapPin className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
           value={query}
@@ -135,7 +135,7 @@ export function PlaceSearch({
             window.setTimeout(() => onBlurCommit(), 120);
           }}
           className={cn(
-            "flex h-12 w-full rounded-2xl border border-border bg-card/90 py-2 pl-10 pr-4 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] outline-none transition duration-300 placeholder:text-muted-foreground/70 focus:border-accent focus:bg-card focus:shadow-[0_0_0_4px_rgba(15,111,104,0.12)]",
+            "flex h-12 w-full min-w-0 rounded-2xl border border-border bg-card/90 py-2 pl-10 pr-4 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] outline-none transition duration-300 placeholder:text-muted-foreground/70 focus:border-accent focus:bg-card focus:shadow-[0_0_0_4px_rgba(15,111,104,0.12)]",
             highlight && "ring-2 ring-accent/25"
           )}
         />
@@ -145,7 +145,7 @@ export function PlaceSearch({
         <ul
           id={listId}
           role="listbox"
-          className="absolute z-30 mt-2 max-h-64 w-full overflow-auto rounded-2xl border border-border bg-card p-1.5 shadow-[var(--shadow-lift)]"
+          className="absolute inset-x-0 z-40 mt-2 max-h-56 overflow-auto overscroll-contain rounded-2xl border border-border bg-card p-1.5 shadow-[var(--shadow-lift)] sm:max-h-64"
         >
           {results.map((place, index) => (
             <li key={place.id} role="option" aria-selected={index === active}>

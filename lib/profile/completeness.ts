@@ -5,7 +5,7 @@ export type MissingField = {
   label: string;
 };
 
-/** Only fields required to start a useful Transit journey. */
+/** Only fields required to start a useful TransitH journey. */
 export function getMissingProfileFields(input: {
   fullName: string;
   currentCity: string;
@@ -85,7 +85,7 @@ export const journeyIntentCopy: Record<
   },
   rebuild_history: {
     title: "Help me piece my records together",
-    blurb: "Fragmented vaccines, letters, and injuries — Transit organises them.",
+    blurb: "Fragmented vaccines, letters, and injuries — TransitH organises them.",
     example: "Missing shots, old scans, incomplete files",
   },
   continue_treatment: {

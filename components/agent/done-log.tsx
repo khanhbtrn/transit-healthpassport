@@ -8,7 +8,7 @@ export function DoneLog({ items }: { items: AgentDoneItem[] }) {
   return (
     <section className="space-y-3">
       <div>
-        <p className="text-sm text-muted-foreground">What Transit did</p>
+        <p className="text-sm text-muted-foreground">What TransitH did</p>
         <h2 className="mt-1 font-display text-2xl tracking-tight">
           Summary of agent work
         </h2>

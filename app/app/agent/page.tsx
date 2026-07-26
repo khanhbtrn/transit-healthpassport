@@ -134,7 +134,7 @@ export default function AgentPage() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type here"
-          aria-label="Ask Transit"
+          aria-label="Ask TransitH"
         />
         <Button type="submit" disabled={loading}>
           Send

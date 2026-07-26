@@ -97,7 +97,7 @@ export default function ConversationPage() {
     listeningRef.current = true;
     recognition.start();
     setPhase("listening");
-    toast.message("Listening — tell your doctor Transit is helping with your move");
+    toast.message("Listening — tell your doctor TransitH is helping with your move");
   }
 
   async function stopAndSave() {
@@ -200,14 +200,14 @@ export default function ConversationPage() {
       <div>
         <h1 className="font-display text-4xl">With my doctor</h1>
         <p className="mt-2 text-muted-foreground">
-          One tap. Transit listens. Then we continue your move.
+          One tap. TransitH listens. Then we continue your move.
         </p>
       </div>
 
       {phase === "ready" ? (
         <div className="space-y-4 rounded-[2rem] border border-border bg-card p-6">
           <p className="text-sm text-muted-foreground">
-            Tell your doctor: “Transit is helping me move my care. It will listen
+            Tell your doctor: “TransitH is helping me move my care. It will listen
             with my permission.”
           </p>
           <Button size="lg" className="w-full" onClick={startListening}>

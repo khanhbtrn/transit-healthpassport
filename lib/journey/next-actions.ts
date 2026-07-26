@@ -29,7 +29,7 @@ export function getIntentHomeActions(input: {
       {
         title: `${pendingApprovals} item${pendingApprovals === 1 ? "" : "s"} need your approval`,
         description:
-          "Transit drafted booking and paperwork. Approve what can leave this app — nothing is sent for real until you say so.",
+          "TransitH drafted booking and paperwork. Approve what can leave this app — nothing is sent for real until you say so.",
         href: "/app/arrival",
         cta: "Review approvals",
         primary: true,
@@ -38,7 +38,7 @@ export function getIntentHomeActions(input: {
         title: "Talk to your agent",
         description: "Ask what’s left for your route or what’s still missing.",
         href: "/app/agent",
-        cta: "Ask Transit",
+        cta: "Ask TransitH",
       },
     ];
   }
@@ -48,7 +48,7 @@ export function getIntentHomeActions(input: {
       {
         title: "Your agent package is ready",
         description:
-          "See what Transit prepared, what’s approved, and your clinic-ready letter.",
+          "See what TransitH prepared, what’s approved, and your clinic-ready letter.",
         href: "/app/arrival",
         cta: "Open summary",
         primary: true,
@@ -59,7 +59,7 @@ export function getIntentHomeActions(input: {
   if (!hasHistory && openNeeds > 0) {
     return [
       {
-        title: "You’re with your doctor — let Transit listen",
+        title: "You’re with your doctor — let TransitH listen",
         description:
           "Don’t chase hospital portals. Capture this visit, then the agent books and drafts everything for " +
           destinationLabel +
@@ -71,7 +71,7 @@ export function getIntentHomeActions(input: {
       {
         title: "Or let the agent start with what you have",
         description:
-          "Transit will list exact docs and people it still needs, then draft booking + paperwork for your approval.",
+          "TransitH will list exact docs and people it still needs, then draft booking + paperwork for your approval.",
         href: "/app/relocation",
         cta: "Start agent",
       },
@@ -81,7 +81,7 @@ export function getIntentHomeActions(input: {
   if (openNeeds > 0 && hasHistory) {
     return [
       {
-        title: `Finish ${openNeeds} item${openNeeds === 1 ? "" : "s"} Transit asked for`,
+        title: `Finish ${openNeeds} item${openNeeds === 1 ? "" : "s"} TransitH asked for`,
         description:
           "Uploads and quick confirmations only — the agent handles bureaucracy.",
         href: "/app/overview",
@@ -100,7 +100,7 @@ export function getIntentHomeActions(input: {
 
   return [
     {
-      title: `Let Transit handle ${destinationLabel}`,
+      title: `Let TransitH handle ${destinationLabel}`,
       description:
         "Agent researches the corridor, asks only for missing docs, prepares booking and handoff — you approve sends.",
       href: "/app/relocation",

@@ -28,7 +28,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="pointer-events-none absolute inset-0 transit-grid opacity-40" />
       <div className="pointer-events-none absolute inset-0 passport-guilloche opacity-40" />
       <AppNav />
-      <main className="relative mx-auto max-w-3xl px-4 py-8 pb-28 sm:px-6 sm:pb-12">
+      <main className="relative mx-auto max-w-3xl px-3 py-6 pb-[max(7.5rem,calc(5.5rem+env(safe-area-inset-bottom)))] sm:px-6 sm:py-8 sm:pb-12">
         <PageEnter key={pathname}>{children}</PageEnter>
       </main>
     </div>

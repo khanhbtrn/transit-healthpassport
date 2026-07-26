@@ -84,7 +84,7 @@ export const mariaTimeline: TimelineEvent[] = [
     eventType: "transition",
     title: "International care transition initiated",
     description:
-      "Maria engaged Transit to prepare healthcare continuity for the move from London to Barcelona.",
+      "Maria engaged TransitH to prepare healthcare continuity for the move from London to Barcelona.",
     sourceType: "patient_reported",
     confidence: "high",
     verificationStatus: "patient_reported",

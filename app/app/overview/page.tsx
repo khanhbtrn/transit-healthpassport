@@ -114,40 +114,40 @@ export default function OverviewPage() {
   return (
     <div className="space-y-8">
       <Reveal variant="passport">
-        <section className="passport-page rounded-[1.35rem] p-5 sm:p-7">
-          <div className="relative flex items-start justify-between gap-4">
-            <div className="min-w-0">
+        <section className="passport-page rounded-[1.2rem] p-4 sm:rounded-[1.35rem] sm:p-7">
+          <div className="relative flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
               <motion.p
-                initial={{ opacity: 0, letterSpacing: "0.34em" }}
-                animate={{ opacity: 1, letterSpacing: "0.22em" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.7 }}
-                className="text-[11px] font-medium uppercase text-[var(--brass)]"
+                className="text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--brass)] sm:text-[11px] sm:tracking-[0.2em]"
               >
-                Health passport · Clearance {readinessPercent}%
+                Health passport · {readinessPercent}%
               </motion.p>
-              <p className="mt-3 text-xs uppercase tracking-[0.16em] text-muted-foreground">
+              <p className="mt-2 break-words text-xs uppercase tracking-[0.12em] text-muted-foreground sm:mt-3 sm:tracking-[0.16em]">
                 {profile.currentCity && profile.destinationCity
                   ? `From ${profile.currentCity} · To ${profile.destinationCity}`
                   : "Corridor pending"}
               </p>
-              <h1 className="mt-2 font-display text-4xl font-bold tracking-tight md:text-5xl">
+              <h1 className="mt-2 break-words font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
                 {firstName}
               </h1>
               <p className="mt-2 max-w-lg text-sm text-muted-foreground">
                 Your care corridor is being prepared so you can show up ready.
-                Transit gathers what clinics need; you approve every send.
+                TransitH gathers what clinics need; you approve every send.
               </p>
             </div>
             <EntryStamp
               label={clearanceLabel}
               sublabel={`${readinessPercent}%`}
               delay={0.35}
-              className="hidden shrink-0 sm:block"
+              className="hidden shrink-0 scale-90 sm:block sm:scale-100"
             />
           </div>
-          <div className="mrz-band relative mt-6 -mx-5 overflow-hidden rounded-b-[1.2rem] sm:-mx-7">
+          <div className="mrz-band relative mt-5 -mx-4 overflow-hidden rounded-b-[1.1rem] sm:mt-6 sm:-mx-7 sm:rounded-b-[1.2rem]">
             <motion.p
-              className="px-5 py-2 text-[10px] sm:px-7"
+              className="truncate px-4 py-2 text-[9px] sm:px-7 sm:text-[10px]"
               initial={{ x: 12, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.25, duration: 0.5 }}
@@ -164,7 +164,7 @@ export default function OverviewPage() {
 
       {primary ? (
         <Reveal variant="passport" delay={0.08}>
-          <section className="passport-page relative overflow-hidden rounded-[1.35rem] p-6 sm:p-8">
+          <section className="passport-page relative overflow-hidden rounded-[1.2rem] p-5 sm:rounded-[1.35rem] sm:p-8">
             <div
               aria-hidden
               className="pointer-events-none absolute -right-8 -top-10 h-36 w-36 rounded-full bg-[var(--brass)]/10 blur-3xl"
@@ -172,18 +172,18 @@ export default function OverviewPage() {
             <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--brass)]">
               Next endorsement
             </p>
-            <h2 className="mt-2 max-w-lg font-display text-3xl font-semibold tracking-tight">
+            <h2 className="mt-2 max-w-lg break-words font-display text-2xl font-semibold tracking-tight sm:text-3xl">
               {primary.title}
             </h2>
             <p className="mt-2 max-w-lg text-sm text-muted-foreground">
               {primary.description}
             </p>
             <motion.div
-              className="mt-6 inline-block"
+              className="mt-6 block w-full sm:inline-block sm:w-auto"
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.98 }}
             >
-              <Button asChild size="lg">
+              <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link href={primary.href}>
                   {primary.cta}
                   <ArrowRight className="h-4 w-4" />
